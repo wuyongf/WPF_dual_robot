@@ -1,0 +1,247 @@
+﻿<Page x:Class="WPF_dual_robot.PageDRMotionSetup"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:WPF_dual_robot"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="PageDRMotionSetup">
+
+    <ScrollViewer>
+
+        <Border Padding="10">
+
+            <Grid>
+
+                <StackPanel>
+
+                    <Grid>
+
+                        <StackPanel>
+
+                            <!-- TMat Inheritance Source Id -->
+                            <materialDesign:Card x:Name="CardDualRobotRegisterPosition"
+                                    Background="{DynamicResource PrimaryHueDarkBrush}"
+                                    Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
+                                    FontWeight="DemiBold"
+                                    HorizontalAlignment="Stretch"
+                                    Padding="8"
+                                    Margin="12">
+                                <TextBlock
+                                         FontSize="16"
+                                         Text="Dual Robot Register Position"
+                                         HorizontalAlignment="Center"/>
+                            </materialDesign:Card>
+
+                            <StackPanel>
+
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <!-- Set No -->
+                                    <TextBox x:Name="TextBoxRegPosX"
+                                        Style="{StaticResource MaterialDesignFilledTextBox}"
+                                        VerticalAlignment="Top"
+                                        AcceptsReturn="True"
+                                        TextWrapping="Wrap"
+                                        materialDesign:HintAssist.Hint="RegPosX" 
+                                        materialDesign:HintAssist.IsFloating="True"
+                                        HorizontalAlignment="Stretch"
+                                        Padding="12"
+                                        Margin="12,0,12,10"
+                                        IsReadOnly="False" 
+                                    />
+                                    <!-- View No -->
+                                    <TextBox Grid.Column="1" x:Name="TextBoxRegPosY"
+                                        Style="{StaticResource MaterialDesignFilledTextBox}"
+                                        VerticalAlignment="Top"
+                                        AcceptsReturn="True"
+                                        TextWrapping="Wrap"
+                                        materialDesign:HintAssist.Hint="RegPosY" 
+                                        materialDesign:HintAssist.IsFloating="True"
+                                        HorizontalAlignment="Stretch"
+                                        Padding="12"
+                                        Margin="12,0,12,10"
+                                        IsReadOnly="False" 
+                                    />
+                                    <!-- Feature Type -->
+                                    <TextBox Grid.Column="2" x:Name="TextBoxRegPosZ"
+                                        Style="{StaticResource MaterialDesignFilledTextBox}"
+                                        VerticalAlignment="Top"
+                                        AcceptsReturn="True"
+                                        TextWrapping="Wrap"
+                                        materialDesign:HintAssist.Hint="RegPosZ" 
+                                        materialDesign:HintAssist.IsFloating="True"
+                                        HorizontalAlignment="Stretch"
+                                        Padding="12"
+                                        Margin="12,0,12,10"
+                                        IsReadOnly="False" 
+                                    />
+
+                                </Grid>
+
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <!-- Set No -->
+                                    <TextBox x:Name="TextBoxRegPosW"
+                                        Style="{StaticResource MaterialDesignFilledTextBox}"
+                                        VerticalAlignment="Top"
+                                        AcceptsReturn="True"
+                                        TextWrapping="Wrap"
+                                        materialDesign:HintAssist.Hint="RegPosW" 
+                                        materialDesign:HintAssist.IsFloating="True"
+                                        HorizontalAlignment="Stretch"
+                                        Padding="12"
+                                        Margin="12,0,12,10"
+                                        IsReadOnly="False" 
+                                    />
+                                    <!-- View No -->
+                                    <TextBox Grid.Column="1" x:Name="TextBoxRegPosP"
+                                        Style="{StaticResource MaterialDesignFilledTextBox}"
+                                        VerticalAlignment="Top"
+                                        AcceptsReturn="True"
+                                        TextWrapping="Wrap"
+                                        materialDesign:HintAssist.Hint="RegPosP" 
+                                        materialDesign:HintAssist.IsFloating="True"
+                                        HorizontalAlignment="Stretch"
+                                        Padding="12"
+                                        Margin="12,0,12,10"
+                                        IsReadOnly="False" 
+                                    />
+                                    <!-- Feature Type -->
+                                    <TextBox Grid.Column="2" x:Name="TextBoxRegPosR"
+                                        Style="{StaticResource MaterialDesignFilledTextBox}"
+                                        VerticalAlignment="Top"
+                                        AcceptsReturn="True"
+                                        TextWrapping="Wrap"
+                                        materialDesign:HintAssist.Hint="RegPosR" 
+                                        materialDesign:HintAssist.IsFloating="True"
+                                        HorizontalAlignment="Stretch"
+                                        Padding="12"
+                                        Margin="12,0,12,10"
+                                        IsReadOnly="False" 
+                                    />
+
+                                </Grid>
+
+                            </StackPanel>
+
+                            <Grid>
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    
+                                </Grid.ColumnDefinitions>
+
+                                <Button Grid.Column="0" x:Name="ButtonUpdateCurPos" Click="ButtonUpdateCurPos_OnClick"
+                                        Style="{StaticResource MaterialDesignRaisedLightButton}"
+                                        Width="180"
+                                        ToolTip="Resource name: MaterialDesignRaisedLightButton"
+                                        Content="_Update Cur Pos" 
+                                        IsEnabled="True"/>
+
+                                
+
+                                <Button Grid.Column="1" x:Name="ButtonApplyRegPos" Click="ButtonApplyRegPos_OnClick"
+                                        Style="{StaticResource MaterialDesignRaisedLightButton}"
+                                        Width="180"
+                                        ToolTip="Resource name: MaterialDesignRaisedLightButton"
+                                        Content="_Apply" />
+
+                            </Grid>
+
+                            <Grid Margin="0,12,0,0">
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    
+                                </Grid.ColumnDefinitions>
+
+                                
+
+                                <Button Grid.Column="0" x:Name="ButtonResetMoveRegister" Click="ButtonResetMoveRegister_OnClick" 
+                                        Style="{StaticResource MaterialDesignRaisedLightButton}"
+                                        Width="180"
+                                        ToolTip="Resource name: MaterialDesignRaisedLightButton"
+                                        Content="_Reset Move Register" 
+                                        IsEnabled="True" />
+
+                                <Button Grid.Column="1" x:Name="ButtonMove" Click="ButtonMove_OnClick"
+                                        Style="{StaticResource MaterialDesignRaisedLightButton}"
+                                        Width="180"
+                                        ToolTip="Resource name: MaterialDesignRaisedLightButton"
+                                        Content="_Move" />
+
+                            </Grid>
+
+                            <!-- TMat Inheritance Source Id -->
+                            <materialDesign:Card x:Name="CardCircleMotion"
+                                    Background="{DynamicResource PrimaryHueDarkBrush}"
+                                    Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
+                                    FontWeight="DemiBold"
+                                    HorizontalAlignment="Stretch"
+                                    Padding="8"
+                                    Margin="12">
+                                <TextBlock
+                                         FontSize="16"
+                                         Text="Circle Motion"
+                                         HorizontalAlignment="Center"/>
+                            </materialDesign:Card>
+
+                            <TextBox x:Name="TextBoxCircleRadius"
+                                         Style="{StaticResource MaterialDesignFilledTextBox}"
+                                         VerticalAlignment="Top"
+                                         AcceptsReturn="True"
+                                         TextWrapping="Wrap"
+                                         materialDesign:HintAssist.Hint="Radius..." 
+                                         materialDesign:HintAssist.IsFloating="True"
+                                         HorizontalAlignment="Stretch"
+                                         Padding="12"
+                                         Margin="12,0,12,10"
+                                         IsReadOnly="False"/>
+
+                            <Grid>
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+
+                                <Button Grid.Column="0" x:Name="ButtonCircleMotion" Click="ButtonCircleMotion_OnClick"
+                                        Style="{StaticResource MaterialDesignRaisedLightButton}"
+                                        Width="180"
+                                        ToolTip="Resource name: MaterialDesignRaisedLightButton"
+                                        Content="_Moveit!" 
+                                        IsEnabled="True"/>
+
+                                <Button Grid.Column="1" x:Name="ButtonApplyCircleRadius" Click="ButtonApplyCircleRadius_OnClick"
+                                        Style="{StaticResource MaterialDesignRaisedLightButton}"
+                                        Width="180"
+                                        ToolTip="Resource name: MaterialDesignRaisedLightButton"
+                                        Content="_Apply" />
+
+                            </Grid>
+
+                </StackPanel>
+
+                    </Grid>
+
+                </StackPanel>
+
+            </Grid>
+
+        </Border>
+
+    </ScrollViewer>
+</Page>
