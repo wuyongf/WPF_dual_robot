@@ -1,0 +1,144 @@
+﻿<Window x:Class="WPF_dual_robot.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WPF_dual_robot"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <ScrollViewer>
+        <Border Padding="10">
+
+            <Grid>
+
+                <StackPanel>
+
+                    <materialDesign:Card x:Name="CardRobot1"
+                                         Background="{DynamicResource PrimaryHueDarkBrush}"
+                                         Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
+                                         FontWeight="DemiBold"
+                                         HorizontalAlignment="Stretch"
+                                         Padding="8"
+                                         Margin="12">
+                        <TextBlock x:Name="TextBlockRobot1"
+                            FontSize="16"
+                            Text="Fanuc CR-7iA/L"
+                            HorizontalAlignment="Center"/>
+                    </materialDesign:Card>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBox 
+                            Grid.Column="0"
+                            x:Name="TextBoxIpAddress1"
+                                 Style="{StaticResource MaterialDesignFilledTextBox}"
+                                 VerticalAlignment="Top"
+                                 AcceptsReturn="True"
+                                 TextWrapping="Wrap"
+                                 materialDesign:HintAssist.Hint="IP Address" 
+                                 materialDesign:HintAssist.IsFloating="True"
+                                 HorizontalAlignment="Stretch"
+                                 Padding="12"
+                                 Margin="12,0,12,10"
+                                 IsReadOnly="False" 
+                        />
+
+                        <TextBox 
+                            Grid.Column="1"
+                            x:Name="TextBoxSimPortNumber1"
+                                 Style="{StaticResource MaterialDesignFilledTextBox}"
+                                 VerticalAlignment="Top"
+                                 AcceptsReturn="True"
+                                 TextWrapping="Wrap"
+                                 materialDesign:HintAssist.Hint="Port" 
+                                 materialDesign:HintAssist.IsFloating="True"
+                                 HorizontalAlignment="Stretch"
+                                 Padding="12"
+                                 Margin="12,0,12,10"
+                                 IsReadOnly="False" 
+                        />
+
+                        <Button 
+                            Grid.Column="2" x:Name="ButtonSimConnect1" Click="ButtonSimConnect1_OnClick"
+                                Style="{StaticResource MaterialDesignRaisedLightButton}"
+                                Width="130"
+                                ToolTip="Resource name: MaterialDesignRaisedLightButton"
+                                Content="Connect"/>
+
+                    </Grid>
+
+                    <materialDesign:Card x:Name="CardRobot2"
+                                         Background="{DynamicResource PrimaryHueDarkBrush}"
+                                         Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
+                                         FontWeight="DemiBold"
+                                         HorizontalAlignment="Stretch"
+                                         Padding="8"
+                                         Margin="12">
+                        <TextBlock
+                            x:Name="TextBlockRobot2"
+                            FontSize="16"
+                            Text="Fanuc CR15-iA"
+                            HorizontalAlignment="Center"/>
+                    </materialDesign:Card>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBox 
+                            Grid.Column="0"
+                            x:Name="TextBoxIpAddress2"
+                                 Style="{StaticResource MaterialDesignFilledTextBox}"
+                                 VerticalAlignment="Top"
+                                 AcceptsReturn="True"
+                                 TextWrapping="Wrap"
+                                 materialDesign:HintAssist.Hint="IP Address" 
+                                 materialDesign:HintAssist.IsFloating="True"
+                                 HorizontalAlignment="Stretch"
+                                 Padding="12"
+                                 Margin="12,0,12,10"
+                                 IsReadOnly="False" 
+                        />
+
+                        <TextBox 
+                            Grid.Column="1"
+                            x:Name="TextBoxSimPortNumber2"
+                                 Style="{StaticResource MaterialDesignFilledTextBox}"
+                                 VerticalAlignment="Top"
+                                 AcceptsReturn="True"
+                                 TextWrapping="Wrap"
+                                 materialDesign:HintAssist.Hint="Port" 
+                                 materialDesign:HintAssist.IsFloating="True"
+                                 HorizontalAlignment="Stretch"
+                                 Padding="12"
+                                 Margin="12,0,12,10"
+                                 IsReadOnly="False" 
+                        />
+
+                        <Button 
+                            Grid.Column="2" x:Name="ButtonSimConnect2" Click="ButtonSimConnect2_OnClick"
+                                Style="{StaticResource MaterialDesignRaisedLightButton}"
+                                Width="130"
+                                ToolTip="Resource name: MaterialDesignRaisedLightButton"
+                                Content="Connect" />
+
+                    </Grid>
+
+                </StackPanel>
+
+
+            </Grid>
+
+        </Border>
+
+    </ScrollViewer>
+</Window>
