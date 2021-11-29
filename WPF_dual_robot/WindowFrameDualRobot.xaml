@@ -52,9 +52,22 @@
                             Content="Init" 
                             MinWidth="100" 
                             Margin="10,0,0,0" 
-                            IsEnabled="False"
-                            Click="ButtonPageDRInitSetup_OnClick"></Button>
-                        <Button x:Name="ButtonPageDRMotionSetup" Content="Motion Setup" MinWidth="100" Margin="10,0,0,0" Click="ButtonPageDRMotionSetup_OnClick"></Button>
+                            IsEnabled="True"
+                            Click="ButtonPageDRInitSetup_OnClick">
+                        </Button>
+                        <Button x:Name="ButtonPageDRRobotBaseMotionSetup" 
+                                Content="RB Motion" 
+                                MinWidth="100" 
+                                Margin="10,0,0,0" 
+                                Click="ButtonPageDRRobotBaseMotion_OnClick">
+                        </Button>
+
+                        <Button x:Name="ButtonPageDRUserFrameMotionSetup" 
+                                Content="UF Motion" 
+                                MinWidth="100" 
+                                Margin="10,0,0,0" 
+                                Click="ButtonPageDRUserFrameMotion_OnClick">
+                        </Button>
 
                     </StackPanel>
 

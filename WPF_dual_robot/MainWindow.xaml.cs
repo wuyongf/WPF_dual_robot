@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -25,266 +26,17 @@ namespace WPF_dual_robot
     /// </summary>
     public partial class MainWindow : Window
     {
+        private DualRobot drCR7 = new DualRobot();
+        private Transformation tfCR7 = new Transformation();
+        private DualRobot drCR15 = new DualRobot();
+        private Transformation tfCR15 = new Transformation();
+
         public MainWindow()
         {
             InitializeComponent();
 
             InitParam();
-
-            // subInit();
-
-            // DualRobot dr1 = new DualRobot();
-            // DualRobot dr2 = new DualRobot();
-            //
-            // dr1.PortNumber = 60008;
-            // dr2.PortNumber = 9021;
-            //
-            // dr1.Init();
-            // dr2.Init();
-            //
-            // dr1.setRegister(1, 1111, 1);
-            // dr2.setRegister(1, 2222, 1);
-            //
-            // dr1.getCurPos();
-            // MessageBox.Show("dr1 current position: " + dr1.strCurPosX + ", " + dr1.strCurPosY + ", " + dr1.strCurPosZ);
-            //
-            // dr2.getCurPos();
-            // MessageBox.Show("dr2 current position: " + dr2.strCurPosX + ", " + dr2.strCurPosY + ", " + dr2.strCurPosZ);
         }
-
-
-
-
-        // private void subInit()
-        // {
-        //     bool blnRes = false;
-        //     string strHost = null;
-        //     int lngTmp = 0;
-        //     
-        //
-        //     try
-        //     {
-        //         mobjCore = new FRRJIf.Core();
-        //
-        //         // You need to set data table before connecting.
-        //         mobjDataTable = mobjCore.DataTable;
-        //
-        //         {
-        //             mobjAlarm = mobjDataTable.AddAlarm(FRRJIf.FRIF_DATA_TYPE.ALARM_LIST, 5, 0);
-        //             mobjAlarmCurrent = mobjDataTable.AddAlarm(FRRJIf.FRIF_DATA_TYPE.ALARM_CURRENT, 1, 0);
-        //             mobjCurPos = mobjDataTable.AddCurPos(FRRJIf.FRIF_DATA_TYPE.CURPOS, 1);
-        //             mobjCurPosUF = mobjDataTable.AddCurPosUF(FRRJIf.FRIF_DATA_TYPE.CURPOS, 1, 15);
-        //             mobjCurPos2 = mobjDataTable.AddCurPos(FRRJIf.FRIF_DATA_TYPE.CURPOS, 2);
-        //             mobjTask = mobjDataTable.AddTask(FRRJIf.FRIF_DATA_TYPE.TASK, 1);
-        //             mobjTaskIgnoreMacro = mobjDataTable.AddTask(FRRJIf.FRIF_DATA_TYPE.TASK_IGNORE_MACRO, 1);
-        //             mobjTaskIgnoreKarel = mobjDataTable.AddTask(FRRJIf.FRIF_DATA_TYPE.TASK_IGNORE_KAREL, 1);
-        //             mobjTaskIgnoreMacroKarel = mobjDataTable.AddTask(FRRJIf.FRIF_DATA_TYPE.TASK_IGNORE_MACRO_KAREL, 1);
-        //             mobjPosReg = mobjDataTable.AddPosReg(FRRJIf.FRIF_DATA_TYPE.POSREG, 1, 1, 10);
-        //             mobjPosReg2 = mobjDataTable.AddPosReg(FRRJIf.FRIF_DATA_TYPE.POSREG, 2, 1, 4);
-        //             mobjSysVarInt = mobjDataTable.AddSysVar(FRRJIf.FRIF_DATA_TYPE.SYSVAR_INT, "$FAST_CLOCK");
-        //             mobjSysVarInt2 = mobjDataTable.AddSysVar(FRRJIf.FRIF_DATA_TYPE.SYSVAR_INT, "$TIMER[10].$TIMER_VAL");
-        //             mobjSysVarReal = mobjDataTable.AddSysVar(FRRJIf.FRIF_DATA_TYPE.SYSVAR_REAL, "$MOR_GRP[1].$CURRENT_ANG[1]");
-        //             mobjSysVarReal2 = mobjDataTable.AddSysVar(FRRJIf.FRIF_DATA_TYPE.SYSVAR_REAL, "$DUTY_TEMP");
-        //             mobjSysVarString = mobjDataTable.AddSysVar(FRRJIf.FRIF_DATA_TYPE.SYSVAR_STRING, "$TIMER[10].$COMMENT");
-        //             mobjSysVarPos = mobjDataTable.AddSysVarPos(FRRJIf.FRIF_DATA_TYPE.SYSVAR_POS, "$MNUTOOL[1,1]");
-        //             mobjVarString = mobjDataTable.AddSysVar(FRRJIf.FRIF_DATA_TYPE.SYSVAR_STRING, "$[HTTPKCL]CMDS[1]");
-        //             mobjNumReg = mobjDataTable.AddNumReg(FRRJIf.FRIF_DATA_TYPE.NUMREG_INT, 1, 200);
-        //             mobjNumReg2 = mobjDataTable.AddNumReg(FRRJIf.FRIF_DATA_TYPE.NUMREG_REAL, 6, 10);
-        //             mobjPosRegXyzwpr = mobjDataTable.AddPosRegXyzwpr(FRRJIf.FRIF_DATA_TYPE.POSREG_XYZWPR, 1, 1, 10);
-        //             mobjStrReg = mobjDataTable.AddString(FRRJIf.FRIF_DATA_TYPE.STRREG, 1, 3);
-        //             mobjStrRegComment = mobjDataTable.AddString(FRRJIf.FRIF_DATA_TYPE.STRREG_COMMENT, 1, 3);
-        //         }
-        //
-        //         // 2nd data table.
-        //         // You must not set the first data table.
-        //         mobjDataTable2 = mobjCore.DataTable2;
-        //         mobjNumReg3 = mobjDataTable2.AddNumReg(FRRJIf.FRIF_DATA_TYPE.NUMREG_INT, 1, 5);
-        //         mobjSysVarIntArray = new FRRJIf.DataSysVar[10];
-        //         mobjSysVarIntArray[0] = mobjDataTable2.AddSysVar(FRRJIf.FRIF_DATA_TYPE.SYSVAR_INT, "$TIMER[1].$TIMER_VAL");
-        //         mobjSysVarIntArray[1] = mobjDataTable2.AddSysVar(FRRJIf.FRIF_DATA_TYPE.SYSVAR_INT, "$TIMER[2].$TIMER_VAL");
-        //         mobjSysVarIntArray[2] = mobjDataTable2.AddSysVar(FRRJIf.FRIF_DATA_TYPE.SYSVAR_INT, "$TIMER[3].$TIMER_VAL");
-        //         mobjSysVarIntArray[3] = mobjDataTable2.AddSysVar(FRRJIf.FRIF_DATA_TYPE.SYSVAR_INT, "$TIMER[4].$TIMER_VAL");
-        //         mobjSysVarIntArray[4] = mobjDataTable2.AddSysVar(FRRJIf.FRIF_DATA_TYPE.SYSVAR_INT, "$TIMER[5].$TIMER_VAL");
-        //         mobjSysVarIntArray[5] = mobjDataTable2.AddSysVar(FRRJIf.FRIF_DATA_TYPE.SYSVAR_INT, "$TIMER[6].$TIMER_VAL");
-        //         mobjSysVarIntArray[6] = mobjDataTable2.AddSysVar(FRRJIf.FRIF_DATA_TYPE.SYSVAR_INT, "$TIMER[7].$TIMER_VAL");
-        //         mobjSysVarIntArray[7] = mobjDataTable2.AddSysVar(FRRJIf.FRIF_DATA_TYPE.SYSVAR_INT, "$TIMER[8].$TIMER_VAL");
-        //         mobjSysVarIntArray[8] = mobjDataTable2.AddSysVar(FRRJIf.FRIF_DATA_TYPE.SYSVAR_INT, "$TIMER[9].$TIMER_VAL");
-        //         mobjSysVarIntArray[9] = mobjDataTable2.AddSysVar(FRRJIf.FRIF_DATA_TYPE.SYSVAR_INT, "$TIMER[10].$TIMER_VAL");
-        //
-        //         //get host name
-        //         strHost = HostName;
-        //
-        //         //get time out value
-        //         lngTmp = 10000;
-        //
-        //         //set port number
-        //         mobjCore.PortNumber = intPortNum;
-        //
-        //         //connect
-        //         if (lngTmp > 0)
-        //             mobjCore.TimeOutValue = lngTmp;
-        //         blnRes = mobjCore.Connect(strHost);
-        //
-        //         getXYZ_Click();
-        //
-        //         MessageBox.Show("current port number: " + mobjCore.PortNumber);
-        //     }
-        //     catch (Exception ex)
-        //     {
-        //         MessageBox.Show(ex.Message);
-        //         System.Environment.Exit(0);
-        //     }
-        // }
-        //
-        // private void getXYZ_Click()
-        // {
-        //     string strTmp = null;
-        //
-        //     short intUF = 0;
-        //     short intUT = 0;
-        //     short intValidC = 0;
-        //     short intValidJ = 0;
-        //     bool blnDT = false;
-        //     bool blnSDO = false;
-        //     bool blnSDI = false;
-        //
-        //     //check
-        //     if (mobjCore == null)
-        //     {
-        //         return;
-        //     }
-        //
-        //     //Refresh data table
-        //     blnDT = mobjDataTable.Refresh();
-        //     if (blnDT == false)
-        //     {
-        //         return;
-        //     }
-        //
-        //     //read SDO
-        //     blnSDO = mobjCore.ReadSDO(1, ref intSDO, 100);
-        //     if (blnSDO == false)
-        //     {
-        //         return;
-        //     }
-        //     //read SDI
-        //     blnSDI = mobjCore.ReadSDI(1, ref intSDI, 10);
-        //     if (blnSDI == false)
-        //     {
-        //         return;
-        //     }
-        //
-        //     {
-        //         if (mobjCurPos.GetValue(ref xyzwpr, ref config, ref joint, ref intUF, ref intUT, ref intValidC, ref intValidJ))
-        //         {
-        //             strTmp = strTmp + "--- CurPos GP1 World ---\r\n";
-        //             strTmp = strTmp + mstrPos(ref xyzwpr, ref config, ref joint, intValidC, intValidJ, intUF, intUT);
-        //         }
-        //         else
-        //         {
-        //             strTmp = strTmp + "CurPos Error!!!\r\n";
-        //         }
-        //     }
-        //
-        //     var pos_x = xyzwpr.GetValue(0).ToString();
-        //     var pos_y = xyzwpr.GetValue(1).ToString();
-        //     var pos_z = xyzwpr.GetValue(2).ToString();
-        //
-        //
-        //     MessageBox.Show("POS(x,y,z): " + pos_x + ", " + pos_y + ", " + pos_z);
-        //
-        //     // Read the Registers
-        //     var resReadReg = mobjNumReg.GetValue(2, ref value);
-        //
-        //     // Write the Registers
-        //     var resWriteReg = mobjNumReg.SetValuesInt(1, indexRegister, 1);
-        //
-        //     // Write the RP
-        //     var resWriteRegRos = setRegisterPos();
-        //
-        // }
-        //
-        // private string mstrPos(ref Array xyzwpr, ref Array config, ref Array joint, short intValidC, short intValidJ, int UF, int UT)
-        // {
-        //     string tmp = "";
-        //     int ii = 0;
-        //
-        //     tmp = tmp + "UF = " + UF + ", ";
-        //     tmp = tmp + "UT = " + UT + "\r\n";
-        //     if (intValidC != 0)
-        //     {
-        //         tmp = tmp + "XYZWPR = ";
-        //         //5
-        //         for (ii = 0; ii <= 8; ii++)
-        //         {
-        //             tmp = tmp + xyzwpr.GetValue(ii) + " ";
-        //         }
-        //
-        //         tmp = tmp + "\r\n" + "CONFIG = ";
-        //         if ((short)config.GetValue(0) != 0)
-        //         {
-        //             tmp = tmp + "F ";
-        //         }
-        //         else
-        //         {
-        //             tmp = tmp + "N ";
-        //         }
-        //         if ((short)config.GetValue(1) != 0)
-        //         {
-        //             tmp = tmp + "L ";
-        //         }
-        //         else
-        //         {
-        //             tmp = tmp + "R ";
-        //         }
-        //         if ((short)config.GetValue(2) != 0)
-        //         {
-        //             tmp = tmp + "U ";
-        //         }
-        //         else
-        //         {
-        //             tmp = tmp + "D ";
-        //         }
-        //         if ((short)config.GetValue(3) != 0)
-        //         {
-        //             tmp = tmp + "T ";
-        //         }
-        //         else
-        //         {
-        //             tmp = tmp + "B ";
-        //         }
-        //         tmp = tmp + String.Format("{0}, {1}, {2}\r\n", config.GetValue(4), config.GetValue(5), config.GetValue(6));
-        //     }
-        //
-        //     if (intValidJ != 0)
-        //     {
-        //         tmp = tmp + "JOINT = ";
-        //         //5
-        //         for (ii = 0; ii <= 8; ii++)
-        //         {
-        //             tmp = tmp + joint.GetValue(ii) + " ";
-        //         }
-        //         tmp = tmp + "\r\n";
-        //     }
-        //
-        //     return tmp;
-        //
-        // }
-        //
-        // private bool setRegisterPos()
-        // {
-        //     short intUF = 0;
-        //     short intUT = 0;
-        //
-        //     xyzwpr.SetValue(-625.408f, 0);
-        //     xyzwpr.SetValue(-743.895, 1);
-        //     xyzwpr.SetValue(45.834, 2);
-        //     xyzwpr.SetValue(5.082, 3);
-        //     xyzwpr.SetValue(-4.774, 4);
-        //     xyzwpr.SetValue(-153.740, 5);
-        //
-        //     return mobjPosReg.SetValueXyzwpr(100, ref xyzwpr, ref config, intUF, intUT);
-        // }
 
         private void InitParam()
         {
@@ -306,8 +58,23 @@ namespace WPF_dual_robot
 
             if (isNumeric)
             {
-                WindowFrameDualRobot windowFrameDualRobot = new WindowFrameDualRobot(strRobotModel, strIPAddress, PortNumber);
-                windowFrameDualRobot.Show();
+                //  string RobotModel, string IPAddress,int Port
+
+                // Init Robot
+                drCR7.Model = strRobotModel;
+                drCR7.HostName = strIPAddress;
+                drCR7.PortNumber = PortNumber;
+
+                // TryConnect
+                if (drCR7.Init())
+                {
+                    WindowFrameDualRobot windowFrameDualRobot = new WindowFrameDualRobot(ref drCR7);
+                    windowFrameDualRobot.Show();
+                }
+                else
+                {
+                    MessageBox.Show("Connection Failed! Please Check!");
+                }
             }
             else
             {
@@ -326,13 +93,259 @@ namespace WPF_dual_robot
 
             if (isNumeric)
             {
-                WindowFrameDualRobot windowFrameDualRobot = new WindowFrameDualRobot(strRobotModel, strIPAddress, PortNumber);
-                windowFrameDualRobot.Show();
+                //  string RobotModel, string IPAddress,int Port
+
+                // Init Robot
+                drCR15.Model = strRobotModel;
+                drCR15.HostName = strIPAddress;
+                drCR15.PortNumber = PortNumber;
+
+                // TryConnect
+                if (drCR15.Init())
+                {
+                    WindowFrameDualRobot windowFrameDualRobot = new WindowFrameDualRobot(ref drCR15);
+                    windowFrameDualRobot.Show();
+                }
+                else
+                {
+                    MessageBox.Show("Connection Failed! Please Check!");
+                }
             }
             else
             {
                 MessageBox.Show("Port: Please Input Integer Number!");
             }
+        }
+
+        private void ButtonResetOrbitCircleParam_OnClick(object sender, RoutedEventArgs e)
+        {
+            TextBoxOrbitCircleRadius.Clear();
+            TextBoxOrbitCircleStepAngle.Clear();
+        }
+
+        private void ButtonApplyOrbitCircleParam_OnClick(object sender, RoutedEventArgs e)
+        {
+            var strTextBoxCircleRadius = TextBoxOrbitCircleRadius.Text;
+            var strTextBoxCircleStepAngle = TextBoxOrbitCircleStepAngle.Text;
+
+            double param_radius, param_step_angle;
+
+            bool isNumericParamRadian = double.TryParse(strTextBoxCircleStepAngle, out param_step_angle);
+            bool isNumericParamRadius = double.TryParse(strTextBoxCircleRadius, out param_radius);
+
+            bool isNumeric = isNumericParamRadius && isNumericParamRadian;
+
+            if (isNumeric)
+            {
+                // assign the param: rb_measure_radius, rb_measure_step_radian
+                tfCR7.uf_orbit_radius = param_radius;
+                tfCR7.uf_orbit_step_angle = param_step_angle;
+
+                // Notice User
+                CardOrbitCircleMotion.Background = Brushes.Cornsilk;
+                CardOrbitCircleMotion.Foreground = Brushes.Black;
+            }
+            else
+            {
+                MessageBox.Show("Please Input Float Number!");
+            }
+        }
+
+        private void ButtonResetMeasureCircleParam_OnClick(object sender, RoutedEventArgs e)
+        {
+            TextBoxMeasureCircleRadius.Clear(); 
+            TextBoxMeasureCircleArc.Clear();
+            TextBoxMeasureCircleStepAngle.Clear();
+        }
+
+        private void ButtonApplyMeasureCircleParam_OnClick(object sender, RoutedEventArgs e)
+        {
+            var strTextBoxCircleRadius = TextBoxMeasureCircleRadius.Text;
+            var strTextBoxMeasureCircleArc = TextBoxMeasureCircleArc.Text;
+            var strTextBoxMeasureCircleStepAngle = TextBoxMeasureCircleStepAngle.Text;
+
+            double param_radius, param_arc, param_step_angle;
+
+            bool isNumericParamRadius = double.TryParse(strTextBoxCircleRadius, out param_radius);
+            bool isNumericParamArc = double.TryParse(strTextBoxMeasureCircleArc, out param_arc);
+            bool isNumericParamStepAngle = double.TryParse(strTextBoxMeasureCircleStepAngle, out param_step_angle);
+
+            bool isNumeric = isNumericParamRadius && isNumericParamArc && isNumericParamStepAngle;
+
+            if (isNumeric)
+            {
+                // assign the param
+                tfCR15.uf_measure_radius = param_radius;
+                tfCR15.uf_measure_arc = param_arc;
+                tfCR15.uf_orbit_step_angle = param_step_angle;
+
+                // Notice User
+                CardMeasureCircleMotion.Background = Brushes.Cornsilk;
+                CardMeasureCircleMotion.Foreground = Brushes.Black;
+            }
+            else
+            {
+                MessageBox.Show("Please Input Float Number!");
+            }
+        }
+
+        private void ButtonStartScenario1A_OnClick(object sender, RoutedEventArgs e)
+        {
+            // get orbit_points
+
+            // get measurement_points
+
+            // init
+            Init_scen1A();
+
+            // move, 2 thread.Start()
+
+            // cout the result.
+        }
+
+        /// <summary>
+        /// Scenario A
+        /// </summary>
+        private readonly object syncLock_scen1A_CR7 = new object();
+        private readonly object syncLock_scen1A_CR15 = new object();
+
+        private int move_flag = 0;
+
+        private void Init_scen1A()
+        {
+            // 1. prepare the status_points
+            //todo:
+
+            // 2. clear register
+            drCR7.setRegister(1, 0, 1);
+            drCR7.setRegister(2, 0, 1);
+            drCR7.setRegister(3, 0, 1);
+            drCR7.setRegister(4, 0, 1);
+            drCR7.setRegister(5, 0, 1);
+            drCR7.setRegister(6, 0, 1);
+            drCR7.setRegister(7, 0, 1);
+
+            drCR15.setRegister(1, 0, 1);
+            drCR15.setRegister(2, 0, 1);
+            drCR15.setRegister(3, 0, 1);
+            drCR15.setRegister(4, 0, 1);
+            drCR15.setRegister(5, 0, 1);
+            drCR15.setRegister(6, 0, 1);
+            drCR15.setRegister(7, 0, 1);
+        }
+
+        private void thread_scen1A_CR7(object syncLock, ref DualRobot dr, ref Transformation tf)
+        {
+            lock (syncLock)
+            {
+                Scen1A_CR7();
+            }
+        }
+
+        private void thread_scen1A_CR15(object syncLock, ref DualRobot dr, ref Transformation tf)
+        {
+            lock (syncLock)
+            {
+                Scen1A_CR15();
+            }
+        }
+
+        // input: via_points
+        private void Scen1A_CR7()
+        {
+            // // 1. Init
+            // tfCR7.rb_orbit_radius;
+            // tfCR7.rb_orbit_step_angle;
+            // tfCR7.via_points;
+            // tfCR7.status_orbit_points
+
+            // 2. CR7: for loop. go through each point.
+            for (int n = 1; n < tfCR7.uf_measure_points_no; n++)
+            {
+                // Check if everything is ok
+                if (CheckRobotStatus())
+                {
+                    // a. wait for move_flag(1)
+                    // b. check robot_status first.
+                    while (move_flag != 1)
+                    {
+                        if (CheckRobotStatus())
+                        {
+                            // do nothing, keep checking.
+
+                            // // TIME
+                            // Thread.Sleep(500);
+                        }
+                        else
+                        {
+                            Console.WriteLine("[ScenarioA]: CR7_2:Something Wrong! Please Check!");
+                            break;
+                        }
+                    }
+
+                    if (move_flag == 1)
+                    {
+                        // b.1 update move_status(2).
+                        tfCR7.status_orbit_points[n - 1][7] = 2;
+
+                        // b.2 configure & move to next point
+                        drCR7.move_uf(tfCR7.via_points[n - 1]);
+
+                        // c. check status, update move_status(3 or 5). 
+
+
+                        // d. based on move_status, set move_flag & measure_flag
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("[ScenarioA]: CR7_1:Something Wrong! Please Check!");
+                    break;
+                }
+            }
+
+            // 3. check status 
+        }
+
+        private void Scen1A_CR15()
+        {
+            // 1.1 Init - param
+            var measure_radius = tfCR15.uf_measure_radius;
+            var measure_arce = tfCR15.uf_measure_arc;
+            var measure_step_angle = tfCR15.uf_measure_step_angle;
+
+            // 1.2 Init - set move_flag
+            move_flag = 1;
+
+            // 2. CR15: for loop. go through each point.
+            for (int n = 1; n < tfCR7.uf_measure_points_no; n++)
+            {
+                // Check if everything is ok
+                if (CheckRobotStatus())
+                {
+                    // a. wait for move_flag(2)
+                    // b. check robot_status first.
+
+                    // b. move to next point, update move_status(2). 
+                    // c. check status, update move_status(3/5). 
+                    // d. based on move_status, set move_flag & measure_flag
+                }
+                else
+                {
+                    Console.WriteLine("[ScenarioA]: Something Wrong! Please Check!");
+                    break;
+                }
+            }
+
+            // 3. check status 
+        }
+
+        private bool CheckRobotStatus()
+        {
+            // 1. check CR7
+            // 2. check CR15
+            // 3. &&
+            return false;
         }
     }
 }

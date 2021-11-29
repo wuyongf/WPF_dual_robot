@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.UI.WebControls;
 
 namespace WPF_dual_robot
 {
@@ -30,6 +31,11 @@ namespace WPF_dual_robot
         public int GetMissionStatus()
         {
             return 0;
+        }
+
+        bool GetToolFrame(int no)
+        {
+            return false;
         }
     }
 

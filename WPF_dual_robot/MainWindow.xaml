@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:WPF_dual_robot"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="800" Width="800">
     <ScrollViewer>
         <Border Padding="10">
 
@@ -130,6 +130,234 @@
                                 Width="130"
                                 ToolTip="Resource name: MaterialDesignRaisedLightButton"
                                 Content="Connect" />
+
+                    </Grid>
+
+                    <materialDesign:Card x:Name="CardScenario1A"
+                                         Background="SteelBlue"
+                                         Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
+                                         FontWeight="DemiBold"
+                                         HorizontalAlignment="Stretch"
+                                         Padding="8"
+                                         Margin="12">
+                        <TextBlock x:Name="TextBlockScenario1A"
+                                   FontSize="16"
+                                   Text="Scenario 1A"
+                                   HorizontalAlignment="Center"/>
+                    </materialDesign:Card>
+
+                    <Grid Margin="0,8,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+
+                        <Button Grid.Column="0" x:Name="ButtonStartScenario1A"  Click="ButtonStartScenario1A_OnClick"
+                                Style="{StaticResource MaterialDesignRaisedLightButton}"
+                                Width="165"
+                                ToolTip="Resource name: MaterialDesignRaisedLightButton"
+                                Content="_Start" />
+
+                        <Button Grid.Column="1" x:Name="ButtonStop"  
+                                Style="{StaticResource MaterialDesignRaisedLightButton}"
+                                Width="165"
+                                ToolTip="Resource name: MaterialDesignRaisedLightButton"
+                                Content="_Pause" 
+                                IsEnabled="False"/>
+
+                        <Button Grid.Column="2" x:Name="ButtonApplyTCP"  
+                                Style="{StaticResource MaterialDesignRaisedLightButton}"
+                                Width="165"
+                                ToolTip="Resource name: MaterialDesignRaisedLightButton"
+                                Content="_Resume" 
+                                IsEnabled="False"/>
+
+                        <Button Grid.Column="3" x:Name="ButtonApplyT1CP"  
+                                Style="{StaticResource MaterialDesignRaisedLightButton}"
+                                Width="165"
+                                ToolTip="Resource name: MaterialDesignRaisedLightButton"
+                                Content="_Stop"
+                                IsEnabled="False"/>
+
+                    </Grid>
+
+                    <Grid Margin="0,8,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0" >
+                            <!-- Circle Motion -->
+                            <materialDesign:Card x:Name="CardOrbitCircleMotion"
+                                    Background="SteelBlue"
+                                    Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
+                                    FontWeight="DemiBold"
+                                    HorizontalAlignment="Stretch"
+                                    Padding="8"
+                                    Margin="12">
+                                <TextBlock
+                                         FontSize="16"
+                                         Text="Motion: Orbit Circle"
+                                         HorizontalAlignment="Center"/>
+                            </materialDesign:Card>
+
+                            <Grid>
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBox 
+                                    Grid.Column="0"
+                                    x:Name="TextBoxOrbitCircleRadius"
+                                    Style="{StaticResource MaterialDesignFilledTextBox}"
+                                    VerticalAlignment="Top"
+                                    AcceptsReturn="True"
+                                    TextWrapping="Wrap"
+                                    materialDesign:HintAssist.Hint="Radius..." 
+                                    materialDesign:HintAssist.IsFloating="True"
+                                    HorizontalAlignment="Stretch"
+                                    Padding="12"
+                                    Margin="12,0,12,10"
+                                    IsReadOnly="False"/>
+
+                                <TextBox 
+                                    Grid.Column="1"
+                                    x:Name="TextBoxOrbitCircleStepAngle"
+                                    Style="{StaticResource MaterialDesignFilledTextBox}"
+                                    VerticalAlignment="Top"
+                                    AcceptsReturn="True"
+                                    TextWrapping="Wrap"
+                                    materialDesign:HintAssist.Hint="Step Angle..." 
+                                    materialDesign:HintAssist.IsFloating="True"
+                                    HorizontalAlignment="Stretch"
+                                    Padding="12"
+                                    Margin="12,0,12,10"
+                                    IsReadOnly="False"/>
+
+                            </Grid>
+
+                            <Grid>
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+
+                                <Button Grid.Column="0" x:Name="ButtonResetOrbitCircleParam" Click="ButtonResetOrbitCircleParam_OnClick"
+                                        Style="{StaticResource MaterialDesignRaisedLightButton}"
+                                        Background="LightBlue"
+                                        Width="160"
+                                        ToolTip="Resource name: MaterialDesignRaisedLightButton"
+                                        Content="_Reset" 
+                                        IsEnabled="True"/>
+
+                                <Button Grid.Column="1" x:Name="ButtonApplyOrbitCircleParam" Click="ButtonApplyOrbitCircleParam_OnClick"
+                                        Style="{StaticResource MaterialDesignRaisedLightButton}"
+                                        Background="LightBlue"
+                                        Width="180"
+                                        ToolTip="Resource name: MaterialDesignRaisedLightButton"
+                                        Content="_Apply" />
+
+                            </Grid>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="1" >
+
+                            <materialDesign:Card x:Name="CardMeasureCircleMotion"
+                                    Background="SteelBlue"
+                                    Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
+                                    FontWeight="DemiBold"
+                                    HorizontalAlignment="Stretch"
+                                    Padding="8"
+                                    Margin="12">
+                                <TextBlock
+                                         FontSize="16"
+                                         Text="Motion: Measure Circle"
+                                         HorizontalAlignment="Center"/>
+                            </materialDesign:Card>
+
+                            <Grid>
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBox 
+                                    Grid.Column="0"
+                                    x:Name="TextBoxMeasureCircleRadius"
+                                    Style="{StaticResource MaterialDesignFilledTextBox}"
+                                    VerticalAlignment="Top"
+                                    AcceptsReturn="True"
+                                    TextWrapping="Wrap"
+                                    materialDesign:HintAssist.Hint="Radius..." 
+                                    materialDesign:HintAssist.IsFloating="True"
+                                    HorizontalAlignment="Stretch"
+                                    Padding="12"
+                                    Margin="12,0,12,10"
+                                    IsReadOnly="False"/>
+
+                                <TextBox 
+                                    Grid.Column="1"
+                                    x:Name="TextBoxMeasureCircleArc"
+                                    Style="{StaticResource MaterialDesignFilledTextBox}"
+                                    VerticalAlignment="Top"
+                                    AcceptsReturn="True"
+                                    TextWrapping="Wrap"
+                                    materialDesign:HintAssist.Hint="Arc..." 
+                                    materialDesign:HintAssist.IsFloating="True"
+                                    HorizontalAlignment="Stretch"
+                                    Padding="12"
+                                    Margin="12,0,12,10"
+                                    IsReadOnly="False"/>
+
+                                <TextBox 
+                                    Grid.Column="2"
+                                    x:Name="TextBoxMeasureCircleStepAngle"
+                                    Style="{StaticResource MaterialDesignFilledTextBox}"
+                                    VerticalAlignment="Top"
+                                    AcceptsReturn="True"
+                                    TextWrapping="Wrap"
+                                    materialDesign:HintAssist.Hint="Step Angle..." 
+                                    materialDesign:HintAssist.IsFloating="True"
+                                    HorizontalAlignment="Stretch"
+                                    Padding="12"
+                                    Margin="12,0,12,10"
+                                    IsReadOnly="False"/>
+
+                            </Grid>
+
+                            <Grid>
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+
+                                <Button Grid.Column="0" x:Name="ButtonResetMeasureCircleParam" Click="ButtonResetMeasureCircleParam_OnClick"
+                                        Style="{StaticResource MaterialDesignRaisedLightButton}"
+                                        Background="LightBlue"
+                                        Width="160"
+                                        ToolTip="Resource name: MaterialDesignRaisedLightButton"
+                                        Content="_Reset" 
+                                        IsEnabled="True"/>
+
+                                <Button Grid.Column="1" x:Name="ButtonApplyMeasureCircleParam" Click="ButtonApplyMeasureCircleParam_OnClick"
+                                        Style="{StaticResource MaterialDesignRaisedLightButton}"
+                                        Background="LightBlue"
+                                        Width="160"
+                                        ToolTip="Resource name: MaterialDesignRaisedLightButton"
+                                        Content="_Apply" />
+
+                            </Grid>
+
+                        </StackPanel>
 
                     </Grid>
 

@@ -18,9 +18,9 @@ using System.Threading;
 namespace WPF_dual_robot
 {
     /// <summary>
-    /// Interaction logic for PageDRMotionSetup.xaml
+    /// Interaction logic for PageDRRobotBaseMotion.xaml
     /// </summary>
-    public partial class PageDRMotionSetup : Page
+    public partial class PageDRRobotBaseMotion : Page
     {
         private DualRobot dr = new DualRobot();
         private Transformation tf = new Transformation();
@@ -32,36 +32,22 @@ namespace WPF_dual_robot
         private readonly object syncLock = new object();
         private readonly object syncLock1 = new object();
 
-        public PageDRMotionSetup(string RobotModel, string IPAddress, int Port)
+        public PageDRRobotBaseMotion(ref DualRobot dr_)
         {
             InitializeComponent();
 
-            // Init Robot
-            dr.Model = RobotModel;
-            dr.HostName = IPAddress;
-            dr.PortNumber = Port;
-
-            // Init UI
             InitParam();
 
-            // TryConnect
-            if (dr.Init())
-            {
-                TextBoxConnectionStatus.Text = "Connected";
-            }
-            else
-            {
-                TextBoxConnectionStatus.Text = "Disconnected";
-            }
+            dr = dr_;
         }
 
         private void InitParam()
         {
-            TextBoxCircleRadius.Text = tf.radius.ToString();
-            TextBoxCircleStepRadian.Text = tf.step_radian.ToString();
+            TextBoxCircleRadius.Text = tf.rb_measure_radius.ToString();
+            TextBoxCircleStepRadian.Text = tf.rb_measure_step_radian.ToString();
 
-            TextBoxOrbitRadius.Text = tf.orbit_radius.ToString();
-            TextBoxOrbitStepRadian.Text = tf.orbit_step_radian.ToString();
+            TextBoxOrbitRadius.Text = tf.rb_orbit_radius.ToString();
+            TextBoxOrbitStepRadian.Text = tf.rb_orbit_step_angle.ToString();
         }
 
         private static void thread_motion_multi_circles(object syncLock1, object syncLock, ref DualRobot dr, ref Transformation tf, ref int orbit_points_no)
@@ -69,11 +55,11 @@ namespace WPF_dual_robot
             lock (syncLock1)
             {
                 // 1. define via_points
-                tf.via_points  = tf.get_orbit_points(tf.center_point, tf.RMat, tf.orbit_radius, 0.01);
+                tf.via_points  = tf.get_rb_orbit_points(tf.rb_center_point, tf.RMat, tf.rb_orbit_radius, 0.01);
                 // 2. move
                 lock (syncLock)
                 {
-                    motion_circle(ref dr, ref tf);
+                    rb_motion_circle(ref dr, ref tf);
                 }
 
 
@@ -86,32 +72,32 @@ namespace WPF_dual_robot
                     dr.setRegister(3, 0, 1);
 
                     // update the orbit point.
-                    tf.get_orbit_points(tf.center_point, tf.RMat, tf.orbit_radius, tf.orbit_step_radian);
+                    tf.get_rb_orbit_points(tf.rb_center_point, tf.RMat, tf.rb_orbit_radius, tf.rb_orbit_step_angle);
 
-                    var orbit_point = tf.orbit_points[j];
+                    var orbit_point = tf.rb_orbit_points[j];
 
                     // 1. define via_points
-                    tf.via_points = tf.get_measure_points(orbit_point, tf.RMat, tf.radius, tf.step_radian);
+                    tf.via_points = tf.get_rb_measure_points(orbit_point, tf.RMat, tf.rb_measure_radius, tf.rb_measure_step_radian);
                     // 2. move
                     lock (syncLock)
                     {
-                        motion_circle(ref dr, ref tf);
+                        rb_motion_circle(ref dr, ref tf);
                     }
                 }
             }
         }
 
 
-        // tf: measure_points
-        private static void thread_motion_circle(object syncLock, ref DualRobot dr, ref Transformation tf)
+        // tf: rb_measure_points
+        private static void thread_rb_motion_circle(object syncLock, ref DualRobot dr, ref Transformation tf)
         {
             lock (syncLock)
             {
-                motion_circle(ref dr,ref tf);
+                rb_motion_circle(ref dr,ref tf);
             }
         }
 
-        private static void motion_circle(ref DualRobot dr, ref Transformation tf)
+        private static void rb_motion_circle(ref DualRobot dr, ref Transformation tf)
         {
             // check List Size
             var via_points_no = tf.via_points.Count;
@@ -158,7 +144,7 @@ namespace WPF_dual_robot
                 var res = dr.setRegisterPos(100, PosArray, ConfigArray, UF, UT);
 
                 // Move
-                dr.setRegister(1, 1, 1);
+                dr.setRegister(1, 3, 1);
                 dr.setRegister(2, 2, 1);
 
                 // Count
@@ -166,14 +152,12 @@ namespace WPF_dual_robot
             }
         }
 
-
         private void ButtonApplyRegPos_OnClick(object sender, RoutedEventArgs e)
         {
             short UF = 0;
             short UT = 0;
 
             float[] PosArray = new float[6];
-            short[] ConfigArray = new short[6];
 
             var strTextBoxRegPosX = TextBoxRegPosX.Text;
             var strTextBoxRegPosY = TextBoxRegPosY.Text;
@@ -202,59 +186,55 @@ namespace WPF_dual_robot
                 PosArray[3] = floatPosW;
                 PosArray[4] = floatPosP;
                 PosArray[5] = floatPosR;
-
-                ConfigArray[0] = 0;
-                ConfigArray[1] = 0;
-                ConfigArray[2] = 1;
-                ConfigArray[3] = 1;
-                ConfigArray[4] = 0;
-                ConfigArray[5] = 0;
             }
             else
             {
                 MessageBox.Show("Please Input Float Number!");
             }
 
-            var res = dr.setRegisterPos(100, PosArray, ConfigArray, UF, UT);
+            var res = dr.setRegisterPos(100, PosArray, dr.config, UF, UT);
         }
 
         private void ButtonMove1_OnClick(object sender, RoutedEventArgs e)
         {
+            // 1. Change to Robot Base
             dr.setRegister(1, 1, 1);
+            dr.setRegister(2, 2, 1);
+
+            // 2. Move to rb_via_point
+            dr.setRegister(1, 3, 1);
             dr.setRegister(2, 2, 1);
         }
 
-        private void ButtonResetMoveRegister_OnClick(object sender, RoutedEventArgs e)
-        {
-            dr.setRegister(1, 0, 1);
-            dr.setRegister(2, 0, 1);
-        }
+        
 
         private void ButtonUpdateCurPos_OnClick(object sender, RoutedEventArgs e)
         {
-            var res = dr.getCurPos();
+            // 1. get cur pos
+            // 2. get cur config
+            var res = dr.getRBCurPos();
 
             if (res)
             {
                 // info the user
-                TextBoxRegPosX.Text = dr.strCurPosX;
-                TextBoxRegPosY.Text = dr.strCurPosY;
-                TextBoxRegPosZ.Text = dr.strCurPosZ;
-                TextBoxRegPosW.Text = dr.strCurPosW;
-                TextBoxRegPosP.Text = dr.strCurPosP;
-                TextBoxRegPosR.Text = dr.strCurPosR;
+                TextBoxRegPosX.Text = dr.strRBCurPosX;
+                TextBoxRegPosY.Text = dr.strRBCurPosY;
+                TextBoxRegPosZ.Text = dr.strRBCurPosZ;
+                TextBoxRegPosW.Text = dr.strRBCurPosW;
+                TextBoxRegPosP.Text = dr.strRBCurPosP;
+                TextBoxRegPosR.Text = dr.strRBCurPosR;
 
                 // calculate the rotation matrix
-                tf.RMat = tf.rpy2R(double.Parse(dr.strCurPosW),
-                    double.Parse(dr.strCurPosP), double.Parse(dr.strCurPosR));
+                tf.RMat = tf.rpy2R(double.Parse(dr.strRBCurPosW),
+                    double.Parse(dr.strRBCurPosP), double.Parse(dr.strRBCurPosR));
 
                 // assign the center point
-                tf.center_point[0] = double.Parse(dr.strCurPosX);
-                tf.center_point[1] = double.Parse(dr.strCurPosY);
-                tf.center_point[2] = double.Parse(dr.strCurPosZ);
-                tf.center_point[3] = double.Parse(dr.strCurPosW);
-                tf.center_point[4] = double.Parse(dr.strCurPosP);
-                tf.center_point[5] = double.Parse(dr.strCurPosR);
+                tf.rb_center_point[0] = double.Parse(dr.strRBCurPosX);
+                tf.rb_center_point[1] = double.Parse(dr.strRBCurPosY);
+                tf.rb_center_point[2] = double.Parse(dr.strRBCurPosZ);
+                tf.rb_center_point[3] = double.Parse(dr.strRBCurPosW);
+                tf.rb_center_point[4] = double.Parse(dr.strRBCurPosP);
+                tf.rb_center_point[5] = double.Parse(dr.strRBCurPosR);
             }
         }
 
@@ -276,9 +256,9 @@ namespace WPF_dual_robot
 
             if (isNumeric)
             {
-                // assign the param: radius, step_radian
-                tf.radius = param_radius;
-                tf.step_radian = param_radian;
+                // assign the param: rb_measure_radius, rb_measure_step_radian
+                tf.rb_measure_radius = param_radius;
+                tf.rb_measure_step_radian = param_radian;
 
                 // Notice User
                 CardCircleMotion.Background = Brushes.Cornsilk;
@@ -298,9 +278,9 @@ namespace WPF_dual_robot
             dr.setRegister(3, 0, 1);
 
             // 1. get via points
-            tf.via_points = tf.get_measure_points(tf.center_point, tf.RMat, tf.radius, tf.step_radian);
+            tf.via_points = tf.get_rb_measure_points(tf.rb_center_point, tf.RMat, tf.rb_measure_radius, tf.rb_measure_step_radian);
             // 2. move
-            Thread th = new Thread(()=> thread_motion_circle(syncLock, ref dr, ref tf));
+            Thread th = new Thread(()=> thread_rb_motion_circle(syncLock, ref dr, ref tf));
             th.Start();
 
         }
@@ -322,9 +302,9 @@ namespace WPF_dual_robot
 
             if (isNumeric)
             {
-                // assign the param: radius, step_radian
-                tf.orbit_radius = param_radius;
-                tf.orbit_step_radian = param_radian;
+                // assign the param: rb_measure_radius, rb_measure_step_radian
+                tf.rb_orbit_radius = param_radius;
+                tf.rb_orbit_step_angle = param_radian;
 
                 // Notice User
                 CardMotionMultiCircles.Background = Brushes.Cornsilk;
@@ -338,10 +318,10 @@ namespace WPF_dual_robot
 
         private void ButtonMove3_OnClick(object sender, RoutedEventArgs e)
         {
-            tf.get_orbit_points(tf.center_point, tf.RMat, tf.orbit_radius, tf.orbit_step_radian);
+            tf.get_rb_orbit_points(tf.rb_center_point, tf.RMat, tf.rb_orbit_radius, tf.rb_orbit_step_angle);
 
             // check List Size
-            var orbit_points_no = tf.orbit_points.Count;
+            var orbit_points_no = tf.rb_orbit_points.Count;
 
             MessageBox.Show("orbit_point number: " + orbit_points_no);
 

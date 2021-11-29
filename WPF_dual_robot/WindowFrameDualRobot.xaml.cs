@@ -19,35 +19,36 @@ namespace WPF_dual_robot
     /// </summary>
     public partial class WindowFrameDualRobot : Window
     {
-        private string strRobotModel;
-        private string strIPAddress;
-        private int intPort;
+        private DualRobot dr = new DualRobot();
 
-        public WindowFrameDualRobot(string RobotModel, string IPAddress,int Port)
+        public WindowFrameDualRobot(ref DualRobot dr_)
         {
             InitializeComponent();
 
             // Init
-            strRobotModel = RobotModel;
-            strIPAddress = IPAddress;
-            intPort = Port;
+
+            dr = dr_;
 
             // Init -  UI
-            TextBlockRobotModel.Text = strRobotModel;
+            TextBlockRobotModel.Text = dr.Model;
 
-            // Motion Page
-            FrameDualRobot.Content = new PageDRMotionSetup(strRobotModel, strIPAddress, intPort);
-        }
-
-        private void ButtonPageDRMotionSetup_OnClick(object sender, RoutedEventArgs e)
-        {
-            FrameDualRobot.Content = new PageDRMotionSetup(strRobotModel, strIPAddress, intPort);
+            // Show the Init Page.
+            FrameDualRobot.Content = new PageDRInitSetup(ref dr);
         }
 
         private void ButtonPageDRInitSetup_OnClick(object sender, RoutedEventArgs e)
         {
-            //todo: need to modify.
-            FrameDualRobot.Content = new PageDRInitSetup();
+            FrameDualRobot.Content = new PageDRInitSetup(ref dr);
+        }
+
+        private void ButtonPageDRRobotBaseMotion_OnClick(object sender, RoutedEventArgs e)
+        {
+            FrameDualRobot.Content = new PageDRRobotBaseMotion(ref dr);
+        }
+
+        private void ButtonPageDRUserFrameMotion_OnClick(object sender, RoutedEventArgs e)
+        {
+            FrameDualRobot.Content = new PageDRUserFrameMotionSetup(ref dr);
         }
     }
 }

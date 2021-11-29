@@ -51,12 +51,28 @@ namespace WPF_dual_robot
         public Array intSDO = new short[100];
         public Array intSDI = new short[10];
 
-        public string strCurPosX;
-        public string strCurPosY;
-        public string strCurPosZ;
-        public string strCurPosW;
-        public string strCurPosP;
-        public string strCurPosR;
+        public string strRBCurPosX;
+        public string strRBCurPosY;
+        public string strRBCurPosZ;
+        public string strRBCurPosW;
+        public string strRBCurPosP;
+        public string strRBCurPosR;
+
+        public string strUFCurPosX;
+        public string strUFCurPosY;
+        public string strUFCurPosZ;
+        public string strUFCurPosW;
+        public string strUFCurPosP;
+        public string strUFCurPosR;
+
+        public float[] arrayUFOrigin = new float[6];
+
+        /// register pos
+        /// 1. get method
+        public Array RpParamXyzwpr = new float[9];
+        public Array RpParamConfig = new short[7];
+        public Array RpParamJoint = new float[9];
+        public short RpParamUF, RpParamUT, RpParamValidC, RpParamValidJ;
 
         // Connection
         public bool Init()
@@ -129,7 +145,6 @@ namespace WPF_dual_robot
                 blnRes = mobjCore.Connect(strHost);
 
                 return true;
-
             }
             catch (Exception ex)
             {
@@ -151,9 +166,18 @@ namespace WPF_dual_robot
         {
             return mobjNumReg.SetValuesInt(index, value, count);
         }
+        
+        // get the Register Pos
+        public bool getRegisterPos(int index)
+        {
+            //Refresh data table
+            mobjDataTable.Refresh();
+
+            return mobjPosReg.GetValue(index, ref RpParamXyzwpr, ref RpParamConfig, ref RpParamJoint, ref RpParamUF, ref RpParamUT, ref RpParamValidC, ref RpParamValidJ);
+        }
 
         // set the Register Pos
-        public bool setRegisterPos(int index, float[] posArray, short[] configArray, short UF, short UT)
+        public bool setRegisterPos(int index, float[] posArray, System.Array configArray, short UF, short UT)
         {
             short intUF = UF;
             short intUT = UT;
@@ -165,18 +189,14 @@ namespace WPF_dual_robot
             xyzwpr.SetValue(posArray[4], 4);
             xyzwpr.SetValue(posArray[5], 5);
 
-            config.SetValue(configArray[0], 0);
-            config.SetValue(configArray[1], 1);
-            config.SetValue(configArray[2], 2);
-            config.SetValue(configArray[3], 3);
-            config.SetValue(configArray[4], 4);
-            config.SetValue(configArray[5], 5);
-
             return mobjPosReg.SetValueXyzwpr(index, ref xyzwpr, ref config, intUF, intUT);
         }
 
-        public bool getCurPos()
+        public bool getRBCurPos()
         {
+            // 1. cur_pos: xyzwpr
+            // 2. cur_config: config
+
             string strTmp = null;
 
             short intUF = 0;
@@ -190,91 +210,75 @@ namespace WPF_dual_robot
 
             if (mobjCurPos.GetValue(ref xyzwpr, ref config, ref joint, ref intUF, ref intUT, ref intValidC, ref intValidJ))
             {
-                strTmp = strTmp + "--- CurPos GP1 World ---\r\n";
-                strTmp = strTmp + this.mstrPos(ref xyzwpr, ref config, ref joint, intValidC, intValidJ, intUF, intUT);
-
-                strCurPosX = xyzwpr.GetValue(0).ToString();
-                strCurPosY = xyzwpr.GetValue(1).ToString();
-                strCurPosZ = xyzwpr.GetValue(2).ToString();
-                strCurPosW = xyzwpr.GetValue(3).ToString();
-                strCurPosP = xyzwpr.GetValue(4).ToString();
-                strCurPosR = xyzwpr.GetValue(5).ToString();
+                strRBCurPosX = xyzwpr.GetValue(0).ToString();
+                strRBCurPosY = xyzwpr.GetValue(1).ToString();
+                strRBCurPosZ = xyzwpr.GetValue(2).ToString();
+                strRBCurPosW = xyzwpr.GetValue(3).ToString();
+                strRBCurPosP = xyzwpr.GetValue(4).ToString();
+                strRBCurPosR = xyzwpr.GetValue(5).ToString();
 
                 return true;
             }
             else
             {
-                strTmp = strTmp + "CurPos Error!!!\r\n";
-
                 return false;
             }
         }
 
-        private string mstrPos(ref Array xyzwpr, ref Array config, ref Array joint, short intValidC, short intValidJ, int UF, int UT)
+        public bool getUFCurPos()
         {
-            string tmp = "";
-            int ii = 0;
+            // 1. cur_pos: xyzwpr
+            // 2. cur_config: config
 
-            tmp = tmp + "UF = " + UF + ", ";
-            tmp = tmp + "UT = " + UT + "\r\n";
-            if (intValidC != 0)
+            string strTmp = null;
+
+            short intUF = 1;
+            short intUT = 1;
+            short intValidC = 0;
+            short intValidJ = 0;
+            bool blnDT = false;
+
+            //Refresh data table
+            blnDT = mobjDataTable.Refresh();
+
+            if (mobjCurPos.GetValue(ref xyzwpr, ref config, ref joint, ref intUF, ref intUT, ref intValidC, ref intValidJ))
             {
-                tmp = tmp + "XYZWPR = ";
-                //5
-                for (ii = 0; ii <= 8; ii++)
-                {
-                    tmp = tmp + xyzwpr.GetValue(ii) + " ";
-                }
+                strUFCurPosX = (float.Parse(xyzwpr.GetValue(0).ToString()) - arrayUFOrigin[0]).ToString();
+                strUFCurPosY = (float.Parse(xyzwpr.GetValue(1).ToString()) - arrayUFOrigin[1]).ToString();
+                strUFCurPosZ = (float.Parse(xyzwpr.GetValue(2).ToString()) - arrayUFOrigin[2]).ToString();
+                strUFCurPosW = (float.Parse(xyzwpr.GetValue(3).ToString()) - arrayUFOrigin[3]).ToString();
+                strUFCurPosP = (float.Parse(xyzwpr.GetValue(4).ToString()) - arrayUFOrigin[4]).ToString();
+                strUFCurPosR = (float.Parse(xyzwpr.GetValue(5).ToString()) - arrayUFOrigin[5]).ToString();
 
-                tmp = tmp + "\r\n" + "CONFIG = ";
-                if ((short)config.GetValue(0) != 0)
-                {
-                    tmp = tmp + "F ";
-                }
-                else
-                {
-                    tmp = tmp + "N ";
-                }
-                if ((short)config.GetValue(1) != 0)
-                {
-                    tmp = tmp + "L ";
-                }
-                else
-                {
-                    tmp = tmp + "R ";
-                }
-                if ((short)config.GetValue(2) != 0)
-                {
-                    tmp = tmp + "U ";
-                }
-                else
-                {
-                    tmp = tmp + "D ";
-                }
-                if ((short)config.GetValue(3) != 0)
-                {
-                    tmp = tmp + "T ";
-                }
-                else
-                {
-                    tmp = tmp + "B ";
-                }
-                tmp = tmp + String.Format("{0}, {1}, {2}\r\n", config.GetValue(4), config.GetValue(5), config.GetValue(6));
+                return true;
             }
-
-            if (intValidJ != 0)
+            else
             {
-                tmp = tmp + "JOINT = ";
-                //5
-                for (ii = 0; ii <= 8; ii++)
-                {
-                    tmp = tmp + joint.GetValue(ii) + " ";
-                }
-                tmp = tmp + "\r\n";
+                return false;
             }
+        }
 
-            return tmp;
+        public void move_uf(double[] via_point)
+        {
+            // config the next via_point
+            short UF = 1;
+            short UT = 1;
 
+            float[] PosArray = new float[6];
+            short[] ConfigArray = new short[6];
+
+            PosArray[0] = float.Parse(via_point[0].ToString());
+            PosArray[1] = float.Parse(via_point[1].ToString());
+            PosArray[2] = float.Parse(via_point[2].ToString());
+            PosArray[3] = float.Parse(via_point[3].ToString());
+            PosArray[4] = float.Parse(via_point[4].ToString());
+            PosArray[5] = float.Parse(via_point[5].ToString());
+
+            var res = this.setRegisterPos(99, PosArray, this.config, UF, UT);
+
+            // Move
+            this.setRegister(1, 4, 1);
+            this.setRegister(2, 2, 1);
         }
     }
 }

@@ -89,6 +89,9 @@
     </ApplicationDefinition>
     <Compile Include="DualRobot.cs" />
     <Compile Include="DualRobotAPI.cs" />
+    <Compile Include="PageDRUserFrameMotion.xaml.cs">
+      <DependentUpon>PageDRUserFrameMotion.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Transformation.cs" />
     <Compile Include="WindowFrameDualRobot.xaml.cs">
       <DependentUpon>WindowFrameDualRobot.xaml</DependentUpon>
@@ -110,7 +113,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="PageDRMotionSetup.xaml">
+    <Page Include="PageDRRobotBaseMotion.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PageDRUserFrameMotion.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -123,8 +130,8 @@
     <Compile Include="PageDRInitSetup.xaml.cs">
       <DependentUpon>PageDRInitSetup.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PageDRMotionSetup.xaml.cs">
-      <DependentUpon>PageDRMotionSetup.xaml</DependentUpon>
+    <Compile Include="PageDRRobotBaseMotion.xaml.cs">
+      <DependentUpon>PageDRRobotBaseMotion.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

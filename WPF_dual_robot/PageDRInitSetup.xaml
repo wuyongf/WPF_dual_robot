@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:WPF_dual_robot"
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       mc:Ignorable="d" 
-      d:DesignHeight="300" d:DesignWidth="800"
+      d:DesignHeight="700" d:DesignWidth="800"
       Title="PageDRInitSetup">
 
     <ScrollViewer>
@@ -21,88 +21,280 @@
 
                         <StackPanel>
 
-                            <!-- TMat Inheritance Source Id -->
-                            <materialDesign:Card x:Name="CardDualRobotSimPort"
+                            <materialDesign:Card 
+                                x:Name="CardDebug"
+                                Background="{DynamicResource PrimaryHueDarkBrush}"
+                                Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
+                                FontWeight="DemiBold"
+                                HorizontalAlignment="Stretch"
+                                Padding="8"
+                                Margin="12">
+                                <TextBlock
+                                    FontSize="16"
+                                    Text="Debug"
+                                    HorizontalAlignment="Center"/>
+                            </materialDesign:Card>
+
+                            <Grid >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+
+                                <materialDesign:Card 
+                                    Grid.Column="0"
+                                    x:Name="CardDualRobotCurPosition1"
                                     Background="{DynamicResource PrimaryHueDarkBrush}"
                                     Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
                                     FontWeight="DemiBold"
                                     HorizontalAlignment="Stretch"
                                     Padding="8"
                                     Margin="12">
+                                    <TextBlock
+                                        FontSize="16"
+                                        Text="Connection Status"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"/>
+                                </materialDesign:Card>
+
+                                <TextBox 
+                                    Grid.Column="1"
+                                    x:Name="TextBoxConnectionStatus"
+                                    Style="{StaticResource MaterialDesignFilledTextBox}"
+                                    VerticalAlignment="Top"
+                                    AcceptsReturn="True"
+                                    TextWrapping="Wrap"
+                                    materialDesign:HintAssist.Hint="Connection Status" 
+                                    HorizontalAlignment="Stretch"
+                                    Margin="12"
+                                    IsReadOnly="True" 
+                                />
+
+                                <Button Grid.Column="2" x:Name="ButtonResetMoveRegister" Click="ButtonResetMoveRegister_OnClick" 
+                                        Style="{StaticResource MaterialDesignRaisedLightButton}"
+                                        Width="180"
+                                        ToolTip="Resource name: MaterialDesignRaisedLightButton"
+                                        Content="_Reset Move Register" 
+                                        IsEnabled="True" />
+
+                            </Grid>
+
+                            <Grid >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+
+                                <materialDesign:Card 
+                                    Grid.Column="0"
+                                    x:Name="CardDualRobotCurPosition11"
+                                    Background="{DynamicResource PrimaryHueDarkBrush}"
+                                    Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
+                                    FontWeight="DemiBold"
+                                    HorizontalAlignment="Stretch"
+                                    Padding="8"
+                                    Margin="12">
+                                    <TextBlock
+                                        FontSize="16"
+                                        Text="Mission Status"
+                                        HorizontalAlignment="Center"/>
+                                </materialDesign:Card>
+
+                                <TextBox 
+                                    Grid.Column="1"
+                                    x:Name="TextBoxMissionStatus"
+                                    Style="{StaticResource MaterialDesignFilledTextBox}"
+                                    VerticalAlignment="Top"
+                                    AcceptsReturn="True"
+                                    TextWrapping="Wrap"
+                                    materialDesign:HintAssist.Hint="Mission Status" 
+                                    HorizontalAlignment="Stretch"
+                                    Margin="12"
+                                    IsReadOnly="True" 
+                                />
+
+                                <Button Grid.Column="2" x:Name="ButtonDebugButto1n2"  
+                                        Style="{StaticResource MaterialDesignRaisedLightButton}"
+                                        Width="180"
+                                        ToolTip="Resource name: MaterialDesignRaisedLightButton"
+                                        Content="_TBD" 
+                                        IsEnabled="False" />
+
+                            </Grid>
+
+                            <materialDesign:Card 
+                                Grid.Column="0"
+                                x:Name="CardDualRobotCurPosition111"
+                                Background="{DynamicResource PrimaryHueDarkBrush}"
+                                Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
+                                FontWeight="DemiBold"
+                                HorizontalAlignment="Stretch"
+                                Padding="8"
+                                Margin="12">
                                 <TextBlock
-                                         FontSize="16"
-                                         Text="Dual Robot Simulation Port"
-                                         HorizontalAlignment="Center"/>
+                                    FontSize="16"
+                                    Text="Tool Center Point"
+                                    HorizontalAlignment="Center"/>
                             </materialDesign:Card>
 
-                            <TextBox x:Name="TextBoxCardDualRobotSimPortNumber"
-                                         Style="{StaticResource MaterialDesignFilledTextBox}"
-                                         VerticalAlignment="Top"
-                                         AcceptsReturn="True"
-                                         TextWrapping="Wrap"
-                                         materialDesign:HintAssist.Hint="Port Number..." 
-                                         materialDesign:HintAssist.IsFloating="True"
-                                         HorizontalAlignment="Stretch"
-                                         Padding="12"
-                                         Margin="12,0,12,10"
-                                         IsReadOnly="False"/>
+                            <StackPanel>
 
-                            <Grid>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <!-- Set No -->
+                                    <TextBox x:Name="TextBoxTCPX"
+                                        Style="{StaticResource MaterialDesignFilledTextBox}"
+                                        VerticalAlignment="Top"
+                                        AcceptsReturn="True"
+                                        TextWrapping="Wrap"
+                                        materialDesign:HintAssist.Hint="offset_X" 
+                                        materialDesign:HintAssist.IsFloating="True"
+                                        HorizontalAlignment="Stretch"
+                                        Padding="12"
+                                        Margin="12,0,12,10"
+                                        IsReadOnly="False" 
+                                    />
+                                    <!-- View No -->
+                                    <TextBox Grid.Column="1" x:Name="TextBoxTCPY"
+                                        Style="{StaticResource MaterialDesignFilledTextBox}"
+                                        VerticalAlignment="Top"
+                                        AcceptsReturn="True"
+                                        TextWrapping="Wrap"
+                                        materialDesign:HintAssist.Hint="offset_Y" 
+                                        materialDesign:HintAssist.IsFloating="True"
+                                        HorizontalAlignment="Stretch"
+                                        Padding="12"
+                                        Margin="12,0,12,10"
+                                        IsReadOnly="False" 
+                                    />
+                                    <!-- Feature Type -->
+                                    <TextBox Grid.Column="2" x:Name="TextBoxTCPZ"
+                                        Style="{StaticResource MaterialDesignFilledTextBox}"
+                                        VerticalAlignment="Top"
+                                        AcceptsReturn="True"
+                                        TextWrapping="Wrap"
+                                        materialDesign:HintAssist.Hint="offset_Z" 
+                                        materialDesign:HintAssist.IsFloating="True"
+                                        HorizontalAlignment="Stretch"
+                                        Padding="12"
+                                        Margin="12,0,12,10"
+                                        IsReadOnly="False" 
+                                    />
 
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"></ColumnDefinition>
-                                    <ColumnDefinition Width="*"></ColumnDefinition>
-                                    <ColumnDefinition Width="*"></ColumnDefinition>
-                                </Grid.ColumnDefinitions>
+                                </Grid>
 
-                                <Button Grid.Column="0"
-                                        Style="{StaticResource MaterialDesignRaisedLightButton}"
-                                        Width="90"
-                                        ToolTip="Resource name: MaterialDesignRaisedLightButton"
-                                        Content="_Update" 
-                                        IsEnabled="False"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <!-- Set No -->
+                                    <TextBox x:Name="TextBoxTCPW"
+                                        Style="{StaticResource MaterialDesignFilledTextBox}"
+                                        VerticalAlignment="Top"
+                                        AcceptsReturn="True"
+                                        TextWrapping="Wrap"
+                                        materialDesign:HintAssist.Hint="offset_W" 
+                                        materialDesign:HintAssist.IsFloating="True"
+                                        HorizontalAlignment="Stretch"
+                                        Padding="12"
+                                        Margin="12,0,12,10"
+                                        IsReadOnly="False" 
+                                    />
+                                    <!-- View No -->
+                                    <TextBox Grid.Column="1" x:Name="TextBoxTCPP"
+                                        Style="{StaticResource MaterialDesignFilledTextBox}"
+                                        VerticalAlignment="Top"
+                                        AcceptsReturn="True"
+                                        TextWrapping="Wrap"
+                                        materialDesign:HintAssist.Hint="offset_P" 
+                                        materialDesign:HintAssist.IsFloating="True"
+                                        HorizontalAlignment="Stretch"
+                                        Padding="12"
+                                        Margin="12,0,12,10"
+                                        IsReadOnly="False" 
+                                    />
+                                    <!-- Feature Type -->
+                                    <TextBox Grid.Column="2" x:Name="TextBoxTCPR"
+                                        Style="{StaticResource MaterialDesignFilledTextBox}"
+                                        VerticalAlignment="Top"
+                                        AcceptsReturn="True"
+                                        TextWrapping="Wrap"
+                                        materialDesign:HintAssist.Hint="offset_R" 
+                                        materialDesign:HintAssist.IsFloating="True"
+                                        HorizontalAlignment="Stretch"
+                                        Padding="12"
+                                        Margin="12,0,12,10"
+                                        IsReadOnly="False" 
+                                    />
 
-                                <Button Grid.Column="1" x:Name="ButtonResetSimPortNumber"  
-                                        Style="{StaticResource MaterialDesignRaisedLightButton}"
-                                        Width="90"
-                                        ToolTip="Resource name: MaterialDesignRaisedLightButton"
-                                        Content="_Reset" />
+                                </Grid>
 
-                                <Button Grid.Column="2" x:Name="ButtonApplySimPortNumber" Click="ButtonApplySimPortNumber_OnClick"
-                                        Style="{StaticResource MaterialDesignRaisedLightButton}"
-                                        Width="90"
-                                        ToolTip="Resource name: MaterialDesignRaisedLightButton"
-                                        Content="_Apply" />
+                                <Grid Margin="0,8,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
 
-                            </Grid>
+                                    <Button Grid.Column="0" x:Name="ButtonUpdateTCP"  Click="ButtonUpdateTCP_OnClick"
+                                            Style="{StaticResource MaterialDesignRaisedLightButton}"
+                                            Width="180"
+                                            ToolTip="Resource name: MaterialDesignRaisedLightButton"
+                                            Content="_Update" />
 
-                            <Grid Margin="0,12,0,0">
+                                    <Button Grid.Column="1" x:Name="ButtonResetTCP"  Click="ButtonResetTCP_OnClick"
+                                            Style="{StaticResource MaterialDesignRaisedLightButton}"
+                                            Width="180"
+                                            ToolTip="Resource name: MaterialDesignRaisedLightButton"
+                                            Content="_Reset" />
 
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"></ColumnDefinition>
-                                    <ColumnDefinition Width="*"></ColumnDefinition>
-                                    <ColumnDefinition Width="*"></ColumnDefinition>
-                                </Grid.ColumnDefinitions>
+                                    <Button Grid.Column="2" x:Name="ButtonApplyTCP"  Click="ButtonApplyTCP_OnClick"
+                                            Style="{StaticResource MaterialDesignRaisedLightButton}"
+                                            Width="180"
+                                            ToolTip="Resource name: MaterialDesignRaisedLightButton"
+                                            Content="_Apply" />
 
-                                <Button Grid.Column="0"
-                                        Style="{StaticResource MaterialDesignRaisedLightButton}"
-                                        Width="120"
-                                        ToolTip="Resource name: MaterialDesignRaisedLightButton"
-                                        Content="_Update" 
-                                        IsEnabled="False"/>
+                                </Grid>
 
-                                <Button Grid.Column="1" x:Name="ButtonConnect"  Click="ButtonConnect_OnClick"
-                                        Style="{StaticResource MaterialDesignRaisedLightButton}"
-                                        Width="120"
-                                        ToolTip="Resource name: MaterialDesignRaisedLightButton"
-                                        Content="_Connect" />
+                                <Grid Margin="0,8,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
 
-                                <Button Grid.Column="2" x:Name="ButtonDisconnect" 
-                                        Style="{StaticResource MaterialDesignRaisedLightButton}"
-                                        Width="120"
-                                        ToolTip="Resource name: MaterialDesignRaisedLightButton"
-                                        Content="_Disconnect" />
-                            </Grid>
+                                    <Button Grid.Column="0" x:Name="ButtonMovePresetPos1"  
+                                            Style="{StaticResource MaterialDesignRaisedLightButton}"
+                                            Width="180"
+                                            ToolTip="Resource name: MaterialDesignRaisedLightButton"
+                                            Content="_Preset Pos1" 
+                                            IsEnabled="False" />
+
+                                    <Button Grid.Column="1" x:Name="ButtonMovePresetPos2"  
+                                            Style="{StaticResource MaterialDesignRaisedLightButton}"
+                                            Width="180"
+                                            ToolTip="Resource name: MaterialDesignRaisedLightButton"
+                                            Content="_Preset Pos2" 
+                                            IsEnabled="False" />
+
+                                    <Button Grid.Column="2" x:Name="ButtonMovePresetPos3"  
+                                            Style="{StaticResource MaterialDesignRaisedLightButton}"
+                                            Width="180"
+                                            ToolTip="Resource name: MaterialDesignRaisedLightButton"
+                                            Content="_Preset Pos3" 
+                                            IsEnabled="False" />
+
+                                </Grid>
+
+                            </StackPanel>
 
                         </StackPanel>
 
