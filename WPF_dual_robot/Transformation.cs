@@ -28,22 +28,24 @@ namespace WPF_dual_robot
         public double rb_orbit_step_angle = Math.PI/2;
         public List<double[]> rb_orbit_points = new List<double[]>();
 
+        /// uf: orbit circle
+        public double uf_orbit_radius = 150;
+        public double uf_orbit_step_angle = 1;
+        public List<double[]> uf_orbit_points = new List<double[]>();
+        public int uf_orbit_points_no;
+
+        public List<double[]> status_orbit_points = new List<double[]>();
+
         /// uf: measure circle
         public double[] uf_center_point = new double[6];
         public double uf_measure_radius = 150;
         public double uf_measure_arc;
         public double uf_measure_step_angle = 0.1;
-        public List<double[]> uf_measure_points = new List<double[]>();
-        public int uf_measure_points_no;
+        
+        public int uf_measure_points_sub_no;
 
-        public List<double[]> status_measure_points = new List<double[]>();
+        public List<List<double[]>> uf_measure_points = new List<List<double[]>>();
 
-        /// uf: orbit circle
-        public double uf_orbit_radius = 150;
-        public double uf_orbit_step_angle = 1;
-        public List<double[]> uf_orbit_points = new List<double[]>();
-
-        public List<double[]> status_orbit_points = new List<double[]>();
 
         public double d2r(double degree)
         {
@@ -162,9 +164,9 @@ namespace WPF_dual_robot
             return uf_orbit_points;
         }
 
-        public List<double[]> get_uf_measure_points(double radius, double arc, double step_angle)
+        public List<double[]> get_uf_measure_points_test(double radius, double arc, double step_angle)
         {
-            uf_measure_points.Clear();
+            List<double[]> uf_measure_points_sub = new List<double[]>();
 
             List<double[]> uf_measure_points_sub1 = new List<double[]>();
             List<double[]> uf_measure_points_sub2 = new List<double[]>();
@@ -183,8 +185,8 @@ namespace WPF_dual_robot
             
                 measure_point[0] = 0;
                 measure_point[1] = Math.Sin(r) * radius;
-                measure_point[2] = Math.Cos(r) * radius;
-                measure_point[3] = -m;
+                measure_point[2] = -Math.Cos(r) * radius;
+                measure_point[3] = m;
                 measure_point[4] = 0;
                 measure_point[5] = 0;
             
@@ -202,8 +204,8 @@ namespace WPF_dual_robot
 
                 measure_point[0] = 0;
                 measure_point[1] = -Math.Sin(r) * radius;
-                measure_point[2] = Math.Cos(r) * radius;
-                measure_point[3] = m;
+                measure_point[2] = -Math.Cos(r) * radius;
+                measure_point[3] = -m;
                 measure_point[4] = 0;
                 measure_point[5] = 0;
 
@@ -211,11 +213,65 @@ namespace WPF_dual_robot
             }
 
             // uf_measure_points
-            uf_measure_points.AddRange(uf_measure_points_sub1);
-            uf_measure_points.AddRange(uf_measure_points_sub2);
+            uf_measure_points_sub.AddRange(uf_measure_points_sub1);
+            uf_measure_points_sub.AddRange(uf_measure_points_sub2);
 
-            return uf_measure_points;
+            return uf_measure_points_sub;
         }
 
+        public List<double[]> get_uf_measure_points(double[] origin, double radius, double arc, double step_angle)
+        {
+            List<double[]> uf_measure_points_sub = new List<double[]>();
+
+            List<double[]> uf_measure_points_sub1 = new List<double[]>();
+            List<double[]> uf_measure_points_sub2 = new List<double[]>();
+
+            var sub_arc = arc / 2;
+
+            var n = sub_arc / step_angle;
+
+            // sub_1
+            //  1. list out the points
+            for (double m = 0; m <= n; m = m + step_angle)
+            {
+                var r = d2r(m);
+
+                double[] measure_point = new double[6];
+
+                measure_point[0] = origin[0];
+                measure_point[1] = -origin[1] + Math.Sin(r) * radius;
+                measure_point[2] = -Math.Cos(r) * radius;
+                measure_point[3] = m;
+                measure_point[4] = 0;
+                measure_point[5] = 0;
+
+                uf_measure_points_sub1.Add(measure_point);
+            }
+            // 2. rearrange
+            uf_measure_points_sub1.Reverse();
+
+            // half_2
+            for (double m = 0; m <= n; m = m + step_angle)
+            {
+                var r = d2r(m);
+
+                double[] measure_point = new double[6];
+
+                measure_point[0] = origin[0];
+                measure_point[1] = -origin[1] - Math.Sin(r) * radius;
+                measure_point[2] = -Math.Cos(r) * radius;
+                measure_point[3] = -m;
+                measure_point[4] = 0;
+                measure_point[5] = 0;
+
+                uf_measure_points_sub2.Add(measure_point);
+            }
+
+            // uf_measure_points
+            uf_measure_points_sub.AddRange(uf_measure_points_sub1);
+            uf_measure_points_sub.AddRange(uf_measure_points_sub2);
+
+            return uf_measure_points_sub;
+        }
     }
 }

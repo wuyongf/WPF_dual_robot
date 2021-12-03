@@ -284,7 +284,7 @@ namespace WPF_dual_robot
             dr.setRegister(3, 0, 1);
 
             // 1. define via_points
-            tf.via_points = tf.get_uf_measure_points(tf.uf_measure_radius, tf.uf_measure_arc, tf.uf_orbit_step_angle);
+            tf.via_points = tf.get_uf_measure_points_test(tf.uf_measure_radius, tf.uf_measure_arc, tf.uf_orbit_step_angle);
 
             // 2. move
             Thread th = new Thread(() => thread_uf_motion_circle(syncLock, ref dr, ref tf));

@@ -177,7 +177,7 @@ namespace WPF_dual_robot
                 // assign the param
                 tfCR15.uf_measure_radius = param_radius;
                 tfCR15.uf_measure_arc = param_arc;
-                tfCR15.uf_orbit_step_angle = param_step_angle;
+                tfCR15.uf_measure_step_angle = param_step_angle;
 
                 // Notice User
                 CardMeasureCircleMotion.Background = Brushes.Cornsilk;
@@ -199,7 +199,8 @@ namespace WPF_dual_robot
             Init_scen1A();
 
             // move, 2 thread.Start()
-
+            Thread th = new Thread(() => thread_scen1A(syncLock_scen1A));
+            th.Start();
             // cout the result.
         }
 
@@ -208,8 +209,9 @@ namespace WPF_dual_robot
         /// </summary>
         private readonly object syncLock_scen1A_CR7 = new object();
         private readonly object syncLock_scen1A_CR15 = new object();
+        private readonly object syncLock_scen1A = new object();
 
-        private int move_flag = 0;
+        private int move_flag = 1;
 
         private void Init_scen1A()
         {
@@ -234,110 +236,76 @@ namespace WPF_dual_robot
             drCR15.setRegister(7, 0, 1);
         }
 
-        private void thread_scen1A_CR7(object syncLock, ref DualRobot dr, ref Transformation tf)
-        {
-            lock (syncLock)
-            {
-                Scen1A_CR7();
-            }
-        }
 
-        private void thread_scen1A_CR15(object syncLock, ref DualRobot dr, ref Transformation tf)
+        private void thread_scen1A(object syncLock)
         {
             lock (syncLock)
             {
-                Scen1A_CR15();
+                Scen1A();
             }
         }
 
         // input: via_points
-        private void Scen1A_CR7()
+
+
+        private void Scen1A()
         {
-            // // 1. Init
             // tfCR7.rb_orbit_radius;
             // tfCR7.rb_orbit_step_angle;
             // tfCR7.via_points;
             // tfCR7.status_orbit_points
 
+            // 1. get all orbit points.
+            
+            tfCR7.uf_orbit_points = tfCR7.get_uf_orbit_points(tfCR7.uf_orbit_radius, tfCR7.uf_orbit_step_angle);
+
+            tfCR7.uf_orbit_points_no = tfCR7.uf_orbit_points.Count;
+
+            tfCR15.uf_measure_points.Clear();
+
+            for (int i = 0; i < tfCR7.uf_orbit_points_no; i++)
+            {
+                var sub_measure_points = tfCR15.get_uf_measure_points(tfCR7.uf_orbit_points[i],tfCR15.uf_measure_radius, 
+                                            tfCR15.uf_measure_arc, tfCR15.uf_measure_step_angle);
+
+                tfCR15.uf_measure_points.Add(sub_measure_points);
+            }
+
+
             // 2. CR7: for loop. go through each point.
-            for (int n = 1; n < tfCR7.uf_measure_points_no; n++)
+            for (int n = 0; n < tfCR7.uf_orbit_points_no; n++)
             {
-                // Check if everything is ok
-                if (CheckRobotStatus())
+                // move to next orbit point.
+                drCR7.move_uf(tfCR7.uf_orbit_points[n]);
+
+                // drCR15.move_uf(tfCR15.uf_measure_points[n][0]);
+
+                // MessageBox.Show("cr15 measure_point[" + n + "]: " + tfCR15.uf_measure_points[n][0][1].ToString());
+
+                for (int m = 0; m < tfCR15.uf_measure_points[n].Count; m++)
                 {
-                    // a. wait for move_flag(1)
-                    // b. check robot_status first.
-                    while (move_flag != 1)
-                    {
-                        if (CheckRobotStatus())
-                        {
-                            // do nothing, keep checking.
-
-                            // // TIME
-                            // Thread.Sleep(500);
-                        }
-                        else
-                        {
-                            Console.WriteLine("[ScenarioA]: CR7_2:Something Wrong! Please Check!");
-                            break;
-                        }
-                    }
-
-                    if (move_flag == 1)
-                    {
-                        // b.1 update move_status(2).
-                        tfCR7.status_orbit_points[n - 1][7] = 2;
-
-                        // b.2 configure & move to next point
-                        drCR7.move_uf(tfCR7.via_points[n - 1]);
-
-                        // c. check status, update move_status(3 or 5). 
-
-
-                        // d. based on move_status, set move_flag & measure_flag
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("[ScenarioA]: CR7_1:Something Wrong! Please Check!");
-                    break;
+                    // // wait for move_flag
+                    // while (move_flag != 1)
+                    // {
+                    //     if (CheckRobotStatus())
+                    //     {
+                    //         // do nothing, keep checking.
+                    //         Console.WriteLine("[Scenario1A]: Keep Checking!");
+                    //     }
+                    //     else
+                    //     {
+                    //         Console.WriteLine("[Scenario1A]: Something Wrong! Please Check!");
+                    //         break;
+                    //     }
+                    // }
+                
+                    // move to next measure point
+                    drCR15.move_uf(tfCR15.uf_measure_points[n][m]);
+                
+                    // reset move_flag
+                    // move_flag = 0;
                 }
             }
-
-            // 3. check status 
-        }
-
-        private void Scen1A_CR15()
-        {
-            // 1.1 Init - param
-            var measure_radius = tfCR15.uf_measure_radius;
-            var measure_arce = tfCR15.uf_measure_arc;
-            var measure_step_angle = tfCR15.uf_measure_step_angle;
-
-            // 1.2 Init - set move_flag
-            move_flag = 1;
-
-            // 2. CR15: for loop. go through each point.
-            for (int n = 1; n < tfCR7.uf_measure_points_no; n++)
-            {
-                // Check if everything is ok
-                if (CheckRobotStatus())
-                {
-                    // a. wait for move_flag(2)
-                    // b. check robot_status first.
-
-                    // b. move to next point, update move_status(2). 
-                    // c. check status, update move_status(3/5). 
-                    // d. based on move_status, set move_flag & measure_flag
-                }
-                else
-                {
-                    Console.WriteLine("[ScenarioA]: Something Wrong! Please Check!");
-                    break;
-                }
-            }
-
-            // 3. check status 
         }
 
         private bool CheckRobotStatus()
@@ -345,7 +313,7 @@ namespace WPF_dual_robot
             // 1. check CR7
             // 2. check CR15
             // 3. &&
-            return false;
+            return true;
         }
     }
 }
