@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using MathNet.Numerics.LinearAlgebra;
 
 namespace WPF_dual_robot
 {
@@ -73,6 +75,9 @@ namespace WPF_dual_robot
         public Array RpParamConfig = new short[7];
         public Array RpParamJoint = new float[9];
         public short RpParamUF, RpParamUT, RpParamValidC, RpParamValidJ;
+
+        /// 2. offset_tcp
+        public float[] offset_tcp = new float[6];
 
         // Connection
         public bool Init()
@@ -280,5 +285,73 @@ namespace WPF_dual_robot
             this.setRegister(1, 4, 1);
             this.setRegister(2, 2, 1);
         }
+
+        public void GetOffsetTCP()
+        {
+            getRegisterPos(97);
+
+            offset_tcp[0] = float.Parse(RpParamXyzwpr.GetValue(0).ToString());
+            offset_tcp[1] = float.Parse(RpParamXyzwpr.GetValue(1).ToString());
+            offset_tcp[2] = float.Parse(RpParamXyzwpr.GetValue(2).ToString());
+            offset_tcp[3] = float.Parse(RpParamXyzwpr.GetValue(3).ToString());
+            offset_tcp[4] = float.Parse(RpParamXyzwpr.GetValue(4).ToString());
+            offset_tcp[5] = float.Parse(RpParamXyzwpr.GetValue(5).ToString());
+        }
+
+        public void SetOffsetTCP()
+        {
+            // 1. assign the tcp
+            short UF = 0;
+            short UT = 0;
+
+            float[] PosArray = new float[6];
+
+            PosArray = offset_tcp;
+
+            var res = this.setRegisterPos(97, PosArray, this.config, this.RpParamUF, this.RpParamUT);
+
+            // 2. station machine: set tool frame
+            this.setRegister(1, 5, 1);
+            this.setRegister(2, 2, 1);
+        }
+
+        public bool SetOffsetTCPTemp(Matrix<double> rpy)
+        {
+            // 1. assign the tcp temp
+            short UF = 1;
+            short UT = 2;
+
+            float[] PosArray = new float[6];
+
+            PosArray[0] = offset_tcp[0];
+            PosArray[1] = offset_tcp[1];
+            PosArray[2] = offset_tcp[2];
+            PosArray[3] = (float)rpy[0,0];
+            PosArray[4] = (float)rpy[1,0];
+            PosArray[5] = (float)rpy[2,0];
+
+            var res = this.setRegisterPos(96, PosArray, this.config, UF, UT);
+
+
+            Thread.Sleep(3000);
+
+            // 1. assign offset_tcp
+            if (res)
+            {
+                // 2. station machine: set tool frame temp
+                this.setRegister(1, 6, 1);
+                this.setRegister(2, 2, 1);
+
+                return true;
+            }
+            else
+            {
+                MessageBox.Show("Cannot Apply TCP! Please Check!");
+
+                return false;
+            }
+        }
+
+
     }
 }

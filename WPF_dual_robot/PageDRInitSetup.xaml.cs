@@ -34,12 +34,25 @@ namespace WPF_dual_robot
 
         private void InitParam()
         {
-            TextBoxTCPX.Text = 0.ToString();
-            TextBoxTCPY.Text = 0.ToString();
-            TextBoxTCPZ.Text = 415.ToString();
-            TextBoxTCPW.Text = (-180).ToString();
-            TextBoxTCPP.Text = 0.ToString();
-            TextBoxTCPR.Text = 0.ToString();
+            if (dr.Model == "Fanuc CR-7iA/L")
+            {
+                TextBoxTCPX.Text = (-20).ToString();
+                TextBoxTCPY.Text = 0.ToString();
+                TextBoxTCPZ.Text = 132.ToString();
+                TextBoxTCPW.Text = 0.ToString();
+                TextBoxTCPP.Text = (-45).ToString();
+                TextBoxTCPR.Text = 0.ToString();
+            }
+
+            if (dr.Model == "Fanuc CR15-iA")
+            {
+                TextBoxTCPX.Text = 0.ToString();
+                TextBoxTCPY.Text = (-105).ToString();
+                TextBoxTCPZ.Text = 195.ToString();
+                TextBoxTCPW.Text = 0.ToString();
+                TextBoxTCPP.Text = 45.ToString();
+                TextBoxTCPR.Text = (-90).ToString();
+            }
         }
 
         private void ButtonResetMoveRegister_OnClick(object sender, RoutedEventArgs e)
@@ -54,7 +67,7 @@ namespace WPF_dual_robot
             if (dr.getRegisterPos(97))
             {
                 // 2. show user
-                TextBoxTCPX.Text = dr.RpParamXyzwpr.GetValue(0).ToString(); 
+                TextBoxTCPX.Text = dr.RpParamXyzwpr.GetValue(0).ToString();
                 TextBoxTCPY.Text = dr.RpParamXyzwpr.GetValue(1).ToString();
                 TextBoxTCPZ.Text = dr.RpParamXyzwpr.GetValue(2).ToString();
                 TextBoxTCPW.Text = dr.RpParamXyzwpr.GetValue(3).ToString();
@@ -122,6 +135,8 @@ namespace WPF_dual_robot
                 PosArray[3] = floatPosW;
                 PosArray[4] = floatPosP;
                 PosArray[5] = floatPosR;
+
+                dr.offset_tcp = PosArray;
             }
             else
             {
