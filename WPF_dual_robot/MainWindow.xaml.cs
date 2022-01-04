@@ -250,61 +250,135 @@ namespace WPF_dual_robot
 
         private void Scen1A()
         {
+            // CR7:  192.168.3.124
+            // CR15: 192.168.3.125
+
             // tfCR7.rb_orbit_radius;
             // tfCR7.rb_orbit_step_angle;
             // tfCR7.via_points;
             // tfCR7.status_orbit_points
 
-            // 1. get all orbit points.
-            
-            tfCR7.uf_orbit_points = tfCR7.get_uf_orbit_points(tfCR7.uf_orbit_radius, tfCR7.uf_orbit_step_angle);
+            // 0. Initialization
+            drCR7.setRegister(1, 0, 1);
+            drCR7.setRegister(2, 0, 1);
+            drCR7.setRegister(3, 0, 1);
+            drCR15.setRegister(1, 0, 1);
+            drCR15.setRegister(2, 0, 1);
+            drCR15.setRegister(3, 0, 1);
 
-            tfCR7.uf_orbit_points_no = tfCR7.uf_orbit_points.Count;
+            // 1. CR15 Path
+            tfCR15.via_points = tfCR15.get_uf_measure_points_v03(0, 90, 1);
 
-            tfCR15.uf_measure_points.Clear();
+            // 2. CR7 Path
+            // check List Size
+            tfCR7.via_orbit_points_part2 = tfCR7.get_uf_orbit_points_part2_v01(0, 180, 45);
 
-            for (int i = 0; i < tfCR7.uf_orbit_points_no; i++)
+            var via_orbit_points_part2_no = tfCR7.via_orbit_points_part2.Count;
+
+            MessageBox.Show("via_point_part_2 number: " + via_orbit_points_part2_no);
+
+            object Register1 = 0;
+            object Register2 = 0;
+
+            // loop -- part 2
+            for (int i = 0; i < via_orbit_points_part2_no; i++)
             {
-                var sub_measure_points = tfCR15.get_uf_measure_points(tfCR7.uf_orbit_points[i],tfCR15.uf_measure_radius, 
-                                            tfCR15.uf_measure_arc, tfCR15.uf_measure_step_angle);
+                // // wait for R[1], R[2] = 0
+                var res1 = drCR7.getRegisterInt(1, ref Register1);
+                var res2 = drCR7.getRegisterInt(2, ref Register2);
 
-                tfCR15.uf_measure_points.Add(sub_measure_points);
-            }
-
-
-            // 2. CR7: for loop. go through each point.
-            for (int n = 0; n < tfCR7.uf_orbit_points_no; n++)
-            {
-                // move to next orbit point.
-                drCR7.move_uf(tfCR7.uf_orbit_points[n]);
-
-                // drCR15.move_uf(tfCR15.uf_measure_points[n][0]);
-
-                // MessageBox.Show("cr15 measure_point[" + n + "]: " + tfCR15.uf_measure_points[n][0][1].ToString());
-
-                for (int m = 0; m < tfCR15.uf_measure_points[n].Count; m++)
+                while (Register1.ToString() != 0.ToString() || Register2.ToString() != 0.ToString())
                 {
-                    // // wait for move_flag
-                    // while (move_flag != 1)
-                    // {
-                    //     if (CheckRobotStatus())
-                    //     {
-                    //         // do nothing, keep checking.
-                    //         Console.WriteLine("[Scenario1A]: Keep Checking!");
-                    //     }
-                    //     else
-                    //     {
-                    //         Console.WriteLine("[Scenario1A]: Something Wrong! Please Check!");
-                    //         break;
-                    //     }
-                    // }
-                
-                    // move to next measure point
-                    drCR15.move_uf(tfCR15.uf_measure_points[n][m]);
-                
-                    // reset move_flag
-                    // move_flag = 0;
+                    res1 = drCR7.getRegisterInt(1, ref Register1);
+                    res2 = drCR7.getRegisterInt(2, ref Register2);
                 }
+
+                // config the next via_point
+                short UF = 1;
+                short UT = 2;
+
+                float[] PosArray_part2 = new float[6];
+                short[] ConfigArray = new short[6];
+
+                PosArray_part2[0] = float.Parse(tfCR7.via_orbit_points_part2[i][0].ToString());
+                PosArray_part2[1] = float.Parse(tfCR7.via_orbit_points_part2[i][1].ToString());
+                PosArray_part2[2] = float.Parse(tfCR7.via_orbit_points_part2[i][2].ToString());
+                PosArray_part2[3] = float.Parse(tfCR7.via_orbit_points_part2[i][3].ToString());
+                PosArray_part2[4] = float.Parse(tfCR7.via_orbit_points_part2[i][4].ToString());
+                PosArray_part2[5] = float.Parse(tfCR7.via_orbit_points_part2[i][5].ToString());
+
+                var res = drCR7.setRegisterPos(99, PosArray_part2, drCR7.config, UF, UT);
+
+                // Move
+                drCR7.setRegister(1, 4, 1);
+                drCR7.setRegister(2, 2, 1);
+
+                // wait for R[1], R[2] = 0
+                while (Register1.ToString() != 0.ToString() || Register2.ToString() != 0.ToString())
+                {
+                    res1 = drCR7.getRegisterInt(1, ref Register1);
+                    res2 = drCR7.getRegisterInt(2, ref Register2);
+                }
+
+                // (1). change to offset_tcp_temp
+                var alpha = -PosArray_part2[5];
+                var rpy = tfCR7.GetTempRPY(drCR7.offset_tcp, alpha);
+
+                var res_offset = drCR7.SetOffsetTCPTemp(rpy);
+
+                // (2). loop -- part 1 -- swing
+                // var via_points = tf.get_uf_orbit_points_part1_v02(180, 1, PosArray);
+                tfCR7.via_orbit_points_part1 = tfCR7.get_uf_orbit_points_part1_v03(180, 60, PosArray_part2, rpy);
+                // tf.via_orbit_points_part1 = tf.get_uf_orbit_points_part1_v04(180, 1, PosArray, dr.offset_tcp);
+
+                var via_orbit_points_part1_no = tfCR7.via_orbit_points_part1.Count;
+
+                for (int j = 0; j < via_orbit_points_part1_no; j++)
+                {
+                    // // wait for R[1], R[2] = 0
+                    res1 = drCR7.getRegisterInt(1, ref Register1);
+                    res2 = drCR7.getRegisterInt(2, ref Register2);
+
+                    while (Register1.ToString() != 0.ToString() || Register2.ToString() != 0.ToString())
+                    {
+                        res1 = drCR7.getRegisterInt(1, ref Register1);
+                        res2 = drCR7.getRegisterInt(2, ref Register2);
+                    }
+
+                    // config the next via_point
+                    UF = 1;
+                    UT = 2;
+
+                    float[] PosArray_part1 = new float[6];
+                    ConfigArray = new short[6];
+
+                    PosArray_part1[0] = float.Parse(tfCR7.via_orbit_points_part1[j][0].ToString());
+                    PosArray_part1[1] = float.Parse(tfCR7.via_orbit_points_part1[j][1].ToString());
+                    PosArray_part1[2] = float.Parse(tfCR7.via_orbit_points_part1[j][2].ToString());
+                    PosArray_part1[3] = float.Parse(tfCR7.via_orbit_points_part1[j][3].ToString());
+                    PosArray_part1[4] = float.Parse(tfCR7.via_orbit_points_part1[j][4].ToString());
+                    PosArray_part1[5] = float.Parse(tfCR7.via_orbit_points_part1[j][5].ToString());
+
+                    res = drCR7.setRegisterPos(99, PosArray_part1, drCR7.config, UF, UT);
+
+                    // Move
+                    drCR7.setRegister(1, 4, 1);
+                    drCR7.setRegister(2, 2, 1);
+
+
+                    /// CR15
+                    ///
+                    uf_motion_circle_v01(ref drCR15, ref tfCR15);
+
+                }
+
+                // (3). change to offset_tcp
+                drCR7.SetOffsetTCP();
+
+                // CR7 returns to via_position of part2.
+                res = drCR7.setRegisterPos(99, PosArray_part2, drCR7.config, UF, UT);
+                drCR7.setRegister(1, 4, 1);
+                drCR7.setRegister(2, 2, 1);
             }
         }
 
@@ -315,5 +389,141 @@ namespace WPF_dual_robot
             // 3. &&
             return true;
         }
+
+        /// <summary>
+        /// For Cr15
+        /// </summary>
+        private static void uf_motion_circle_v01(ref DualRobot dr, ref Transformation tf)
+        {
+            // check List Size
+            var via_points_no = tf.via_points.Count;
+
+            MessageBox.Show("CR15: via_point number: " + via_points_no);
+
+            object Register1 = 0;
+            object Register2 = 0;
+
+            bool res, res1, res2;
+            short UF, UT;
+            // loop
+            for (int i = 0; i < via_points_no; i++)
+            {
+                // // wait for R[1], R[2] = 0
+                res1 = dr.getRegisterInt(1, ref Register1);
+                res2 = dr.getRegisterInt(2, ref Register2);
+
+                while (Register1.ToString() != 0.ToString() || Register2.ToString() != 0.ToString())
+                {
+                    res1 = dr.getRegisterInt(1, ref Register1);
+                    res2 = dr.getRegisterInt(2, ref Register2);
+                }
+
+                // config the next via_point
+                UF = UT = 1;
+
+                float[] PosArray = new float[6];
+                short[] ConfigArray = new short[6];
+
+                PosArray[0] = float.Parse(tf.via_points[i][0].ToString());
+                PosArray[1] = float.Parse(tf.via_points[i][1].ToString());
+                PosArray[2] = float.Parse(tf.via_points[i][2].ToString());
+                PosArray[3] = float.Parse(tf.via_points[i][3].ToString());
+                PosArray[4] = float.Parse(tf.via_points[i][4].ToString());
+                PosArray[5] = float.Parse(tf.via_points[i][5].ToString());
+
+                res = dr.setRegisterPos(99, PosArray, dr.config, UF, UT);
+
+                // Move
+                dr.setRegister(1, 4, 1);
+                dr.setRegister(2, 2, 1);
+
+                // Count
+                dr.setRegister(3, i + 1, 1);
+            }
+
+            UF = UT = 1;
+            float[] PosArray_default = new float[6];
+            PosArray_default[0] = PosArray_default[1] = PosArray_default[2] = PosArray_default[3] = PosArray_default[4] = PosArray_default[5] = 0;
+
+            res = dr.setRegisterPos(99, PosArray_default, dr.config, UF, UT);
+
+            // Move
+            dr.setRegister(1, 4, 1);
+            dr.setRegister(2, 2, 1);
+
+            while (Register1.ToString() != 0.ToString() || Register2.ToString() != 0.ToString())
+            {
+                res1 = dr.getRegisterInt(1, ref Register1);
+                res2 = dr.getRegisterInt(2, ref Register2);
+            }
+        }
+
+        // private void Scen1A()
+        // {
+        //     // tfCR7.rb_orbit_radius;
+        //     // tfCR7.rb_orbit_step_angle;
+        //     // tfCR7.via_points;
+        //     // tfCR7.status_orbit_points
+        //
+        //     // 1. get all orbit points.
+        //     
+        //     tfCR7.uf_orbit_points = tfCR7.get_uf_orbit_points(tfCR7.uf_orbit_radius, tfCR7.uf_orbit_step_angle);
+        //
+        //     tfCR7.uf_orbit_points_no = tfCR7.uf_orbit_points.Count;
+        //
+        //     tfCR15.uf_measure_points.Clear();
+        //
+        //     for (int i = 0; i < tfCR7.uf_orbit_points_no; i++)
+        //     {
+        //         var sub_measure_points = tfCR15.get_uf_measure_points(tfCR7.uf_orbit_points[i],tfCR15.uf_measure_radius, 
+        //                                     tfCR15.uf_measure_arc, tfCR15.uf_measure_step_angle);
+        //
+        //         tfCR15.uf_measure_points.Add(sub_measure_points);
+        //     }
+        //
+        //
+        //     // 2. CR7: for loop. go through each point.
+        //     for (int n = 0; n < tfCR7.uf_orbit_points_no; n++)
+        //     {
+        //         // move to next orbit point.
+        //         drCR7.move_uf(tfCR7.uf_orbit_points[n]);
+        //
+        //         // drCR15.move_uf(tfCR15.uf_measure_points[n][0]);
+        //
+        //         // MessageBox.Show("cr15 measure_point[" + n + "]: " + tfCR15.uf_measure_points[n][0][1].ToString());
+        //
+        //         for (int m = 0; m < tfCR15.uf_measure_points[n].Count; m++)
+        //         {
+        //             // // wait for move_flag
+        //             // while (move_flag != 1)
+        //             // {
+        //             //     if (CheckRobotStatus())
+        //             //     {
+        //             //         // do nothing, keep checking.
+        //             //         Console.WriteLine("[Scenario1A]: Keep Checking!");
+        //             //     }
+        //             //     else
+        //             //     {
+        //             //         Console.WriteLine("[Scenario1A]: Something Wrong! Please Check!");
+        //             //         break;
+        //             //     }
+        //             // }
+        //         
+        //             // move to next measure point
+        //             drCR15.move_uf(tfCR15.uf_measure_points[n][m]);
+        //         
+        //             // reset move_flag
+        //             // move_flag = 0;
+        //         }
+        //     }
+        // }
+        //
+        // private bool CheckRobotStatus()
+        // {
+        //     // 1. check CR7
+        //     // 2. check CR15
+        //     // 3. &&
+        //     return true;
+        // }
     }
 }
