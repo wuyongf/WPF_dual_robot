@@ -267,7 +267,7 @@ namespace WPF_dual_robot
             drCR15.setRegister(3, 0, 1);
 
             // 1. CR15 Path
-            tfCR15.via_points = tfCR15.get_uf_measure_points_v03(0, 90, 1);
+            tfCR15.via_points = tfCR15.get_uf_measure_points_v03(0, 90, 0.5);
 
             // 2. CR7 Path
             // check List Size
@@ -275,24 +275,15 @@ namespace WPF_dual_robot
 
             var via_orbit_points_part2_no = tfCR7.via_orbit_points_part2.Count;
 
-            MessageBox.Show("via_point_part_2 number: " + via_orbit_points_part2_no);
+            // MessageBox.Show("via_point_part_2 number: " + via_orbit_points_part2_no);
 
-            object Register1 = 0;
-            object Register2 = 0;
 
             // loop -- part 2
+
+            drCR7.WaitForReady();
+
             for (int i = 0; i < via_orbit_points_part2_no; i++)
             {
-                // // wait for R[1], R[2] = 0
-                var res1 = drCR7.getRegisterInt(1, ref Register1);
-                var res2 = drCR7.getRegisterInt(2, ref Register2);
-
-                while (Register1.ToString() != 0.ToString() || Register2.ToString() != 0.ToString())
-                {
-                    res1 = drCR7.getRegisterInt(1, ref Register1);
-                    res2 = drCR7.getRegisterInt(2, ref Register2);
-                }
-
                 // config the next via_point
                 short UF = 1;
                 short UT = 2;
@@ -313,72 +304,63 @@ namespace WPF_dual_robot
                 drCR7.setRegister(1, 4, 1);
                 drCR7.setRegister(2, 2, 1);
 
-                // wait for R[1], R[2] = 0
-                while (Register1.ToString() != 0.ToString() || Register2.ToString() != 0.ToString())
-                {
-                    res1 = drCR7.getRegisterInt(1, ref Register1);
-                    res2 = drCR7.getRegisterInt(2, ref Register2);
-                }
+                drCR7.WaitForReady();
 
                 // (1). change to offset_tcp_temp
                 var alpha = -PosArray_part2[5];
                 var rpy = tfCR7.GetTempRPY(drCR7.offset_tcp, alpha);
-
+                
                 var res_offset = drCR7.SetOffsetTCPTemp(rpy);
-
+                
                 // (2). loop -- part 1 -- swing
                 // var via_points = tf.get_uf_orbit_points_part1_v02(180, 1, PosArray);
                 tfCR7.via_orbit_points_part1 = tfCR7.get_uf_orbit_points_part1_v03(180, 60, PosArray_part2, rpy);
                 // tf.via_orbit_points_part1 = tf.get_uf_orbit_points_part1_v04(180, 1, PosArray, dr.offset_tcp);
-
+                
                 var via_orbit_points_part1_no = tfCR7.via_orbit_points_part1.Count;
-
+                
+                drCR7.WaitForReady();
                 for (int j = 0; j < via_orbit_points_part1_no; j++)
                 {
-                    // // wait for R[1], R[2] = 0
-                    res1 = drCR7.getRegisterInt(1, ref Register1);
-                    res2 = drCR7.getRegisterInt(2, ref Register2);
-
-                    while (Register1.ToString() != 0.ToString() || Register2.ToString() != 0.ToString())
-                    {
-                        res1 = drCR7.getRegisterInt(1, ref Register1);
-                        res2 = drCR7.getRegisterInt(2, ref Register2);
-                    }
-
                     // config the next via_point
                     UF = 1;
                     UT = 2;
-
+                
                     float[] PosArray_part1 = new float[6];
                     ConfigArray = new short[6];
-
+                
                     PosArray_part1[0] = float.Parse(tfCR7.via_orbit_points_part1[j][0].ToString());
                     PosArray_part1[1] = float.Parse(tfCR7.via_orbit_points_part1[j][1].ToString());
                     PosArray_part1[2] = float.Parse(tfCR7.via_orbit_points_part1[j][2].ToString());
                     PosArray_part1[3] = float.Parse(tfCR7.via_orbit_points_part1[j][3].ToString());
                     PosArray_part1[4] = float.Parse(tfCR7.via_orbit_points_part1[j][4].ToString());
                     PosArray_part1[5] = float.Parse(tfCR7.via_orbit_points_part1[j][5].ToString());
-
+                
                     res = drCR7.setRegisterPos(99, PosArray_part1, drCR7.config, UF, UT);
-
+                
                     // Move
                     drCR7.setRegister(1, 4, 1);
                     drCR7.setRegister(2, 2, 1);
-
-
+                
+                    drCR7.WaitForReady();
+                
                     /// CR15
-                    ///
                     uf_motion_circle_v01(ref drCR15, ref tfCR15);
-
                 }
-
+                
                 // (3). change to offset_tcp
                 drCR7.SetOffsetTCP();
+                drCR7.WaitForReady();
+
+                // /// CR15
+                // uf_motion_circle_v01(ref drCR15, ref tfCR15);
 
                 // CR7 returns to via_position of part2.
                 res = drCR7.setRegisterPos(99, PosArray_part2, drCR7.config, UF, UT);
                 drCR7.setRegister(1, 4, 1);
                 drCR7.setRegister(2, 2, 1);
+
+                drCR7.WaitForReady();
             }
         }
 
@@ -398,26 +380,15 @@ namespace WPF_dual_robot
             // check List Size
             var via_points_no = tf.via_points.Count;
 
-            MessageBox.Show("CR15: via_point number: " + via_points_no);
+            // MessageBox.Show("CR15: via_point number: " + via_points_no);
 
-            object Register1 = 0;
-            object Register2 = 0;
-
-            bool res, res1, res2;
+            bool res;
             short UF, UT;
             // loop
+            dr.WaitForReady();
+
             for (int i = 0; i < via_points_no; i++)
             {
-                // // wait for R[1], R[2] = 0
-                res1 = dr.getRegisterInt(1, ref Register1);
-                res2 = dr.getRegisterInt(2, ref Register2);
-
-                while (Register1.ToString() != 0.ToString() || Register2.ToString() != 0.ToString())
-                {
-                    res1 = dr.getRegisterInt(1, ref Register1);
-                    res2 = dr.getRegisterInt(2, ref Register2);
-                }
-
                 // config the next via_point
                 UF = UT = 1;
 
@@ -451,11 +422,7 @@ namespace WPF_dual_robot
             dr.setRegister(1, 4, 1);
             dr.setRegister(2, 2, 1);
 
-            while (Register1.ToString() != 0.ToString() || Register2.ToString() != 0.ToString())
-            {
-                res1 = dr.getRegisterInt(1, ref Register1);
-                res2 = dr.getRegisterInt(2, ref Register2);
-            }
+            dr.WaitForReady();
         }
 
         // private void Scen1A()

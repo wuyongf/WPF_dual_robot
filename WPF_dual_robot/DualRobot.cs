@@ -352,6 +352,34 @@ namespace WPF_dual_robot
             }
         }
 
+        public bool WaitForReady()
+        {
+            object Register1 = -1;
+            object Register2 = -1;
+
+            bool res1, res2;
+
+            // wait for R[1], R[2] = 0
+            res1 = this.getRegisterInt(1, ref Register1);
+            res2 = this.getRegisterInt(2, ref Register2);
+
+            while (Register1.ToString() != 0.ToString() || Register2.ToString() != 0.ToString())
+            {
+                res1 = this.getRegisterInt(1, ref Register1);
+                res2 = this.getRegisterInt(2, ref Register2);
+            }
+
+            if (res1 && res2)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+
 
     }
 }

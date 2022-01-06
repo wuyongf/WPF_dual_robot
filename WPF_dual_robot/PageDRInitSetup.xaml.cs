@@ -36,12 +36,12 @@ namespace WPF_dual_robot
         {
             if (dr.Model == "Fanuc CR-7iA/L")
             {
-                TextBoxTCPX.Text = (-20).ToString();
+                TextBoxTCPX.Text = (-17).ToString();
                 TextBoxTCPY.Text = 0.ToString();
-                TextBoxTCPZ.Text = 132.ToString();
-                TextBoxTCPW.Text = 0.ToString();
+                TextBoxTCPZ.Text = (131).ToString();
+                TextBoxTCPW.Text = (0).ToString();
                 TextBoxTCPP.Text = (-45).ToString();
-                TextBoxTCPR.Text = 0.ToString();
+                TextBoxTCPR.Text = (0).ToString();
             }
 
             if (dr.Model == "Fanuc CR15-iA")

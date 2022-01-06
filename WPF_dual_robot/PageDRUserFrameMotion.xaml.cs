@@ -33,16 +33,26 @@ namespace WPF_dual_robot
         {
             InitializeComponent();
 
-            InitParams();
-
             dr = dr_;
+
+            InitParams();
         }
 
         private void InitParams()
         {
-            TextBoxMeasureCircleRadius.Text = 80.ToString();
-            TextBoxMeasureCircleArc.Text = 120.ToString();
-            TextBoxMeasureCircleStepAngle.Text = 1.ToString();
+            if (dr.Model == "Fanuc CR-7iA/L")
+            {
+                TextBoxMeasureCircleRadius.Text = 0.ToString();
+                TextBoxMeasureCircleArc.Text = 0.ToString();
+                TextBoxMeasureCircleStepAngle.Text = 0.ToString();
+            }
+
+            if (dr.Model == "Fanuc CR15-iA")
+            {
+                TextBoxMeasureCircleRadius.Text = 0.ToString();
+                TextBoxMeasureCircleArc.Text = 90.ToString();
+                TextBoxMeasureCircleStepAngle.Text = 1.ToString();
+            }
         }
 
 
@@ -69,28 +79,16 @@ namespace WPF_dual_robot
 
             MessageBox.Show("via_point number: " + via_points_no);
 
-            object Register1 = 0;
-            object Register2 = 0;
-
             // loop
             for (int i = 0; i < via_points_no; i++)
             {
-                // // wait for R[1], R[2] = 0
-                var res1 = dr.getRegisterInt(1, ref Register1);
-                var res2 = dr.getRegisterInt(2, ref Register2);
-
-                while (Register1.ToString() != 0.ToString() || Register2.ToString() != 0.ToString())
-                {
-                    res1 = dr.getRegisterInt(1, ref Register1);
-                    res2 = dr.getRegisterInt(2, ref Register2);
-                }
+                dr.WaitForReady();
 
                 // config the next via_point
                 short UF = 1;
                 short UT = 1;
 
                 float[] PosArray = new float[6];
-                short[] ConfigArray = new short[6];
 
                 PosArray[0] = float.Parse(tf.via_points[i][0].ToString());
                 PosArray[1] = float.Parse(tf.via_points[i][1].ToString());
@@ -105,8 +103,12 @@ namespace WPF_dual_robot
                 dr.setRegister(1, 4, 1);
                 dr.setRegister(2, 2, 1);
 
+                dr.WaitForReady();
+
                 // Count
                 dr.setRegister(3, i + 1, 1);
+
+                // MessageBox.Show("via_point_no: " + (i + 1).ToString());
             }
         }
 
@@ -205,22 +207,10 @@ namespace WPF_dual_robot
 
             MessageBox.Show("via_point_part_2 number: " + via_orbit_points_part2_no);
 
-            object Register1 = 0;
-            object Register2 = 0;
-
             // loop -- part 2
+            dr.WaitForReady();
             for (int i = 0; i < via_orbit_points_part2_no; i++)
             {
-                // // wait for R[1], R[2] = 0
-                var res1 = dr.getRegisterInt(1, ref Register1);
-                var res2 = dr.getRegisterInt(2, ref Register2);
-
-                while (Register1.ToString() != 0.ToString() || Register2.ToString() != 0.ToString())
-                {
-                    res1 = dr.getRegisterInt(1, ref Register1);
-                    res2 = dr.getRegisterInt(2, ref Register2);
-                }
-
                 // config the next via_point
                 short UF = 1;
                 short UT = 2;
@@ -241,38 +231,20 @@ namespace WPF_dual_robot
                 dr.setRegister(1, 4, 1);
                 dr.setRegister(2, 2, 1);
 
-                // wait for R[1], R[2] = 0
-                while (Register1.ToString() != 0.ToString() || Register2.ToString() != 0.ToString())
-                {
-                    res1 = dr.getRegisterInt(1, ref Register1);
-                    res2 = dr.getRegisterInt(2, ref Register2);
-                }
+                dr.WaitForReady();
 
-                // // 1. change to offset_tcp_temp
+                // 1. change to offset_tcp_temp
                 var alpha = -PosArray[5];
                 var rpy = tf.GetTempRPY(dr.offset_tcp, alpha);
-
                 var res_offset = dr.SetOffsetTCPTemp(rpy);
 
                 // 2. loop -- part 1 -- swing
-                // var via_points = tf.get_uf_orbit_points_part1_v02(180, 1, PosArray);
                 tf.via_orbit_points_part1 = tf.get_uf_orbit_points_part1_v03(180, 1, PosArray, rpy);
-                // tf.via_orbit_points_part1 = tf.get_uf_orbit_points_part1_v04(180, 1, PosArray, dr.offset_tcp);
-
                 var via_orbit_points_part1_no = tf.via_orbit_points_part1.Count;
 
+                dr.WaitForReady();
                 for (int j = 0; j < via_orbit_points_part1_no; j++)
                 {
-                    // // wait for R[1], R[2] = 0
-                    res1 = dr.getRegisterInt(1, ref Register1);
-                    res2 = dr.getRegisterInt(2, ref Register2);
-
-                    while (Register1.ToString() != 0.ToString() || Register2.ToString() != 0.ToString())
-                    {
-                        res1 = dr.getRegisterInt(1, ref Register1);
-                        res2 = dr.getRegisterInt(2, ref Register2);
-                    }
-
                     // config the next via_point
                     UF = 1;
                     UT = 2;
@@ -292,10 +264,13 @@ namespace WPF_dual_robot
                     // Move
                     dr.setRegister(1, 4, 1);
                     dr.setRegister(2, 2, 1);
+
+                    dr.WaitForReady();
                 }
 
                 // // 3. change to offset_tcp
                 dr.SetOffsetTCP();
+                dr.WaitForReady();
             }
         }
 
@@ -509,10 +484,9 @@ namespace WPF_dual_robot
 
             if (dr.Model == "Fanuc CR15-iA")
             {
+                MessageBox.Show("radius:" + tf.uf_measure_radius + "arc:" + tf.uf_measure_arc + "step_angle:" + tf.uf_measure_step_angle);
                 tf.via_points = tf.get_uf_measure_points_v03(tf.uf_measure_radius, tf.uf_measure_arc, tf.uf_measure_step_angle);
             }
-
-
 
             // 2. move
             Thread th = new Thread(() => thread_uf_motion_circle(syncLock, ref dr, ref tf));
