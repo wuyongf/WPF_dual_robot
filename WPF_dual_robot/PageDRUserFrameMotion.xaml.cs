@@ -232,11 +232,13 @@ namespace WPF_dual_robot
                 dr.setRegister(2, 2, 1);
 
                 dr.WaitForReady();
+                dr.Wait(100);
 
                 // 1. change to offset_tcp_temp
                 var alpha = -PosArray[5];
                 var rpy = tf.GetTempRPY(dr.offset_tcp, alpha);
                 var res_offset = dr.SetOffsetTCPTemp(rpy);
+                dr.Wait(100);
 
                 // 2. loop -- part 1 -- swing
                 tf.via_orbit_points_part1 = tf.get_uf_orbit_points_part1_v03(180, 1, PosArray, rpy);
@@ -266,11 +268,20 @@ namespace WPF_dual_robot
                     dr.setRegister(2, 2, 1);
 
                     dr.WaitForReady();
+                    dr.Wait(100);
                 }
 
                 // // 3. change to offset_tcp
+                dr.WaitForReady();
+                dr.Wait(100);
                 dr.SetOffsetTCP();
                 dr.WaitForReady();
+                dr.Wait(100);
+
+                dr.SetOrigin();
+                dr.MovetoOrigin();
+                dr.WaitForReady();
+                dr.Wait(100);
             }
         }
 
@@ -479,7 +490,7 @@ namespace WPF_dual_robot
 
             if (dr.Model == "Fanuc CR-7iA/L")
             {
-                
+
             }
 
             if (dr.Model == "Fanuc CR15-iA")

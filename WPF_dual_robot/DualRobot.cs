@@ -171,7 +171,7 @@ namespace WPF_dual_robot
         {
             return mobjNumReg.SetValuesInt(index, value, count);
         }
-        
+
         // get the Register Pos
         public bool getRegisterPos(int index)
         {
@@ -326,12 +326,11 @@ namespace WPF_dual_robot
             PosArray[0] = offset_tcp[0];
             PosArray[1] = offset_tcp[1];
             PosArray[2] = offset_tcp[2];
-            PosArray[3] = (float)rpy[0,0];
-            PosArray[4] = (float)rpy[1,0];
-            PosArray[5] = (float)rpy[2,0];
+            PosArray[3] = (float)rpy[0, 0];
+            PosArray[4] = (float)rpy[1, 0];
+            PosArray[5] = (float)rpy[2, 0];
 
             var res = this.setRegisterPos(96, PosArray, this.config, UF, UT);
-
 
             Thread.Sleep(3000);
 
@@ -379,7 +378,37 @@ namespace WPF_dual_robot
             }
         }
 
+        public void Wait(int ms)
+        {
+            Thread.Sleep(ms);
+        }
 
+        public void SetOrigin()
+        {
+            short UF = 1;
+            short UT = 2;
 
+            float[] PosArray = new float[6];
+
+            PosArray[0] = 0;
+            PosArray[1] = 0;
+            PosArray[2] = 0;
+            PosArray[3] = 0;
+            PosArray[4] = 0;
+            PosArray[5] = 0;
+
+            var res = this.setRegisterPos(99, PosArray, this.config, UF, UT);
+        }
+
+        public void MovetoOrigin()
+        {
+            // 0. Initialization
+            this.setRegister(1, 0, 1);
+            this.setRegister(2, 0, 1);
+
+            // 1. Move to uf_via_point
+            this.setRegister(1, 4, 1);
+            this.setRegister(2, 2, 1);
+        }
     }
 }
