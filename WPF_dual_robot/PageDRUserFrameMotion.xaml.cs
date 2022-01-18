@@ -105,6 +105,16 @@ namespace WPF_dual_robot
 
                 dr.WaitForReady();
 
+                if (i == 0)
+                {
+                    MessageBox.Show("CR15 Arrived!");
+                }
+
+                if (i == via_points_no)
+                {
+                    MessageBox.Show("CR15 Arrived!");
+                }
+
                 // Count
                 dr.setRegister(3, i + 1, 1);
 
@@ -241,7 +251,7 @@ namespace WPF_dual_robot
                 dr.Wait(100);
 
                 // 2. loop -- part 1 -- swing
-                tf.via_orbit_points_part1 = tf.get_uf_orbit_points_part1_v03(180, 1, PosArray, rpy);
+                tf.via_orbit_points_part1 = tf.get_uf_orbit_points_part1_v03(140, 1, PosArray, rpy);
                 var via_orbit_points_part1_no = tf.via_orbit_points_part1.Count;
 
                 dr.WaitForReady();
@@ -277,6 +287,11 @@ namespace WPF_dual_robot
                 dr.SetOffsetTCP();
                 dr.WaitForReady();
                 dr.Wait(100);
+
+                if (i == via_orbit_points_part2_no-1)
+                {
+                    MessageBox.Show("CR7 Arrived!");
+                }
 
                 dr.SetOrigin();
                 dr.MovetoOrigin();
