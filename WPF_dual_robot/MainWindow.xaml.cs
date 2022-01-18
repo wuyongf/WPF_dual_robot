@@ -40,7 +40,11 @@ namespace WPF_dual_robot
 
         private void InitParam()
         {
-            TextBoxIpAddress1.Text = "127.0.0.1";
+
+            // cr7
+            TextBoxIpAddress1.Text = "192.168.3.124";
+            
+            // cr15
             TextBoxIpAddress2.Text = "127.0.0.1";
 
             TextBoxSimPortNumber1.Text = 60008.ToString();
