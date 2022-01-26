@@ -12,7 +12,7 @@ namespace WPF_dual_robot
         /// <summary>
         /// Initialization 
         /// </summary>
-        
+
         public bool Connect(string RobotModel, string IPAddress)
         {
             return false;
@@ -37,6 +37,20 @@ namespace WPF_dual_robot
         {
             return false;
         }
-    }
 
+
+        // 1. bool GetConnectionStatus()
+        // 2. int GetMissionStatus()
+
+        // 1. bool Connect(string ip,string port)
+        // 2. bool ResetMovement()
+        // 3. bool SetTCP(float[])
+        // 4. float[] GetCurPos();
+        // 5. bool SetOriginal(float[])
+        // 6. bool SetSinglePoint(float[])
+        // 7. bool MoveSinglePoint()
+        // 8. bool Scenario1A()
+        // 9. bool Scenario2A()
+
+    }
 }

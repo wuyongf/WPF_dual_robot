@@ -133,7 +133,7 @@
 
                     </Grid>
 
-                    <materialDesign:Card x:Name="CardScenario1A"
+                    <materialDesign:Card x:Name="CardScenario"
                                          Background="SteelBlue"
                                          Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
                                          FontWeight="DemiBold"
@@ -142,7 +142,7 @@
                                          Margin="12">
                         <TextBlock x:Name="TextBlockScenario1A"
                                    FontSize="16"
-                                   Text="Scenario 1A"
+                                   Text="Scenario"
                                    HorizontalAlignment="Center"/>
                     </materialDesign:Card>
 
@@ -158,14 +158,14 @@
                                 Style="{StaticResource MaterialDesignRaisedLightButton}"
                                 Width="165"
                                 ToolTip="Resource name: MaterialDesignRaisedLightButton"
-                                Content="_Start" />
+                                Content="_Scene 1A" />
 
-                        <Button Grid.Column="1" x:Name="ButtonStop"  
+                        <Button Grid.Column="1" x:Name="ButtonStartScenario2A"   Click="ButtonStartScenario2A_OnClick"
                                 Style="{StaticResource MaterialDesignRaisedLightButton}"
                                 Width="165"
                                 ToolTip="Resource name: MaterialDesignRaisedLightButton"
-                                Content="_Pause" 
-                                IsEnabled="False"/>
+                                Content="_Scene 2A" 
+                                IsEnabled="True"/>
 
                         <Button Grid.Column="2" x:Name="ButtonApplyTCP"  
                                 Style="{StaticResource MaterialDesignRaisedLightButton}"

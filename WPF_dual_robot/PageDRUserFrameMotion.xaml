@@ -323,7 +323,7 @@
                                     Margin="12">
                                 <TextBlock
                                          FontSize="16"
-                                         Text="Motion: Measure Circle"
+                                         Text="1A Motion: Measure Circle"
                                          HorizontalAlignment="Center"/>
                             </materialDesign:Card>
 
@@ -405,7 +405,7 @@
                                         Width="180"
                                         ToolTip="Resource name: MaterialDesignRaisedLightButton"
                                         Content="_Move" 
-                                        IsEnabled="True"/>
+                                        IsEnabled="True" Margin="37.333,0,36.667,0" VerticalAlignment="Top"/>
 
                             </Grid>
 
@@ -419,7 +419,7 @@
                                     Margin="12">
                                 <TextBlock
                                          FontSize="16"
-                                         Text="Motion: Multi Circles"
+                                         Text="2A Motion: Measurement"
                                          HorizontalAlignment="Center"/>
                             </materialDesign:Card>
 
@@ -428,11 +428,12 @@
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"></ColumnDefinition>
                                     <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
                                 </Grid.ColumnDefinitions>
 
                                 <TextBox 
                                     Grid.Column="0"
-                                    x:Name="TextBoxOrbitRadius"
+                                    x:Name="TextBox2AMotionRadius"
                                     Style="{StaticResource MaterialDesignFilledTextBox}"
                                     VerticalAlignment="Top"
                                     AcceptsReturn="True"
@@ -446,7 +447,21 @@
 
                                 <TextBox 
                                     Grid.Column="1"
-                                    x:Name="TextBoxOrbitStepRadian"
+                                    x:Name="TextBox2AMotionArc"
+                                    Style="{StaticResource MaterialDesignFilledTextBox}"
+                                    VerticalAlignment="Top"
+                                    AcceptsReturn="True"
+                                    TextWrapping="Wrap"
+                                    materialDesign:HintAssist.Hint="Arc..." 
+                                    materialDesign:HintAssist.IsFloating="True"
+                                    HorizontalAlignment="Stretch"
+                                    Padding="12"
+                                    Margin="12,0,12,10"
+                                    IsReadOnly="False"/>
+
+                                <TextBox 
+                                    Grid.Column="2"
+                                    x:Name="TextBox2AMotionStepAngle"
                                     Style="{StaticResource MaterialDesignFilledTextBox}"
                                     VerticalAlignment="Top"
                                     AcceptsReturn="True"
@@ -475,13 +490,13 @@
                                         Content="_Update Cur Pos" 
                                         IsEnabled="True"/>
 
-                                <Button Grid.Column="1" x:Name="ButtonApplyCircleMotionParam3" 
+                                <Button Grid.Column="1" x:Name="ButtonApply2AMotionParam" Click="ButtonApply2AMotionParam_OnClick"
                                         Style="{StaticResource MaterialDesignRaisedLightButton}"
                                         Width="180"
                                         ToolTip="Resource name: MaterialDesignRaisedLightButton"
                                         Content="_Apply" />
 
-                                <Button Grid.Column="2" x:Name="ButtonMove3" 
+                                <Button Grid.Column="2" x:Name="ButtonMove2AMotion" Click="ButtonMove2AMotion_OnClick"
                                         Style="{StaticResource MaterialDesignRaisedLightButton}"
                                         Width="180"
                                         ToolTip="Resource name: MaterialDesignRaisedLightButton"

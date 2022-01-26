@@ -55,6 +55,21 @@ namespace WPF_dual_robot
             }
         }
 
+        private static void thread_2A_motion(object syncLock, ref DualRobot dr, ref Transformation tf)
+        {
+            lock (syncLock)
+            {
+                if (dr.Model == "Fanuc CR-7iA/L")
+                {
+                    uf_motion_circle(ref dr, ref tf);
+                }
+
+                if (dr.Model == "Fanuc CR15-iA")
+                {
+                    uf_motion_circle(ref dr, ref tf);
+                }
+            }
+        }
 
         private static void thread_uf_motion_circle(object syncLock, ref DualRobot dr, ref Transformation tf)
         {
@@ -251,7 +266,7 @@ namespace WPF_dual_robot
                 dr.Wait(100);
 
                 // 2. loop -- part 1 -- swing
-                tf.via_orbit_points_part1 = tf.get_uf_orbit_points_part1_v03(140, 1, PosArray, rpy);
+                tf.via_orbit_points_part1 = tf.get_uf_orbit_points_part1_v03(180, 1, PosArray, rpy);
                 var via_orbit_points_part1_no = tf.via_orbit_points_part1.Count;
 
                 dr.WaitForReady();
@@ -260,7 +275,7 @@ namespace WPF_dual_robot
                     // config the next via_point
                     UF = 1;
                     UT = 2;
-
+                    
                     PosArray = new float[6];
                     ConfigArray = new short[6];
 
@@ -516,6 +531,61 @@ namespace WPF_dual_robot
 
             // 2. move
             Thread th = new Thread(() => thread_uf_motion_circle(syncLock, ref dr, ref tf));
+            th.Start();
+        }
+
+        private void ButtonApply2AMotionParam_OnClick(object sender, RoutedEventArgs e)
+        {
+            var strTextBoxCircleRadius = TextBox2AMotionRadius.Text;
+            var strTextBoxMeasureCircleArc = TextBox2AMotionArc.Text;
+            var strTextBoxMeasureCircleStepAngle = TextBox2AMotionStepAngle.Text;
+
+            double param_radius, param_arc, param_step_angle;
+
+            bool isNumericParamRadius = double.TryParse(strTextBoxCircleRadius, out param_radius);
+            bool isNumericParamArc = double.TryParse(strTextBoxMeasureCircleArc, out param_arc);
+            bool isNumericParamStepAngle = double.TryParse(strTextBoxMeasureCircleStepAngle, out param_step_angle);
+
+            bool isNumeric = isNumericParamRadius && isNumericParamArc && isNumericParamStepAngle;
+
+            if (isNumeric)
+            {
+                // assign the param
+                tf.uf_measure_radius = param_radius;
+                tf.uf_measure_arc = param_arc;
+                tf.uf_measure_step_angle = param_step_angle;
+
+                // Notice User
+                CardMeasureCircleMotion.Background = Brushes.Cornsilk;
+                CardMeasureCircleMotion.Foreground = Brushes.Black;
+            }
+            else
+            {
+                MessageBox.Show("Please Input Float Number!");
+            }
+        }
+
+        private void ButtonMove2AMotion_OnClick(object sender, RoutedEventArgs e)
+        {
+            // 0. Initialization
+            dr.setRegister(1, 0, 1);
+            dr.setRegister(2, 0, 1);
+            dr.setRegister(3, 0, 1);
+
+            // 1. get via_points
+            if (dr.Model == "Fanuc CR-7iA/L")
+            {
+                MessageBox.Show("radius:" + tf.uf_measure_radius + "arc:" + tf.uf_measure_arc + "step_angle:" + tf.uf_measure_step_angle);
+                tf.via_points = tf.get_2A_motion_points(tf.uf_measure_radius, tf.uf_measure_arc, tf.uf_measure_step_angle);
+            }
+            if (dr.Model == "Fanuc CR15-iA")
+            {
+                MessageBox.Show("radius:" + tf.uf_measure_radius + "arc:" + tf.uf_measure_arc + "step_angle:" + tf.uf_measure_step_angle);
+                tf.via_points = tf.get_2A_motion_measurement_points(tf.uf_measure_radius, tf.uf_measure_arc, tf.uf_measure_step_angle);
+            }
+
+            // 2. move
+            Thread th = new Thread(() => thread_2A_motion(syncLock, ref dr, ref tf));
             th.Start();
         }
     }

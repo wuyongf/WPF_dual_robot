@@ -67,6 +67,7 @@ namespace WPF_dual_robot
         public string strUFCurPosP;
         public string strUFCurPosR;
 
+        //{0,0,0,0,0,0}
         public float[] arrayUFOrigin = new float[6];
 
         /// register pos
@@ -163,6 +164,9 @@ namespace WPF_dual_robot
         // get the Registers
         public bool getRegisterInt(int index, ref object value)
         {
+            //Refresh data table
+            mobjDataTable.Refresh();
+
             return mobjNumReg.GetValue(index, ref value);
         }
 
