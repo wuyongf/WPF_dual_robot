@@ -404,7 +404,7 @@ namespace WPF_dual_robot
                 PosArray[2] = float.Parse(tf.via_points[i][2].ToString());
                 PosArray[3] = float.Parse(tf.via_points[i][3].ToString());
                 PosArray[4] = float.Parse(tf.via_points[i][4].ToString());
-                PosArray[5] = float.Parse(tf.via_points[i][5].ToString());
+                PosArray[5] = float.Parse(tf.via_points[i][5].ToString());                          
 
                 res = dr.setRegisterPos(99, PosArray, dr.config, UF, UT);
 
