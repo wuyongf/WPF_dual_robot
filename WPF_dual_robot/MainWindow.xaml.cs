@@ -317,6 +317,9 @@ namespace WPF_dual_robot
 
                 // (1). change to offset_tcp_temp
                 var alpha = -PosArray_part2[5];
+
+                // MessageBox.Show("drCR7.offset_tcp:" + drCR7.offset_tcp[3] + "," + drCR7.offset_tcp[4] + "," + drCR7.offset_tcp[5]);
+                
                 var rpy = tfCR7.GetTempRPY(drCR7.offset_tcp, alpha);
                 
                 var res_offset = drCR7.SetOffsetTCPTemp(rpy);
@@ -473,7 +476,7 @@ namespace WPF_dual_robot
             // check List Size
             tfCR7.via_points = tfCR7.get_2A_motion_points(0, 75, 15);
             var via_points_no = tfCR7.via_points.Count;
-            
+
             // loop -- part 2
             for (int i = 0; i < via_points_no; i++)
             {
@@ -503,6 +506,7 @@ namespace WPF_dual_robot
                 CR15_Motion(ref drCR15, ref tfCR15);
 
                 drCR15.WaitForReady();
+
             }
 
             // CR7 returns to via_position of part2.

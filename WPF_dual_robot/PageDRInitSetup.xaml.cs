@@ -38,22 +38,22 @@ namespace WPF_dual_robot
             {
                 /* For 2A */
 
-                TextBoxTCPX.Text = (-55).ToString();
-                TextBoxTCPY.Text = (-82).ToString();
-                TextBoxTCPZ.Text = (182).ToString();
-                TextBoxTCPW.Text = (0).ToString();
-                TextBoxTCPP.Text = (0).ToString();
-                TextBoxTCPR.Text = (0).ToString();
+                // TextBoxTCPX.Text = (-55).ToString();
+                // TextBoxTCPY.Text = (-140).ToString();
+                // TextBoxTCPZ.Text = (183).ToString();
+                // TextBoxTCPW.Text = (0).ToString();
+                // TextBoxTCPP.Text = (0).ToString();
+                // TextBoxTCPR.Text = (0).ToString();
 
 
                 /* For 1A */
 
-                // TextBoxTCPX.Text = (-85).ToString();
-                // TextBoxTCPY.Text = 0.ToString();
-                // TextBoxTCPZ.Text = (123).ToString();
-                // TextBoxTCPW.Text = (0).ToString();
-                // TextBoxTCPP.Text = (-45).ToString();
-                // TextBoxTCPR.Text = (0).ToString();
+                TextBoxTCPX.Text = (9).ToString();
+                TextBoxTCPY.Text = 0.ToString();
+                TextBoxTCPZ.Text = (123).ToString();
+                TextBoxTCPW.Text = (0).ToString();
+                TextBoxTCPP.Text = (-45).ToString();
+                TextBoxTCPR.Text = (0).ToString();
 
                 //
 
@@ -82,22 +82,22 @@ namespace WPF_dual_robot
             if (dr.Model == "Fanuc CR15-iA")
             {
                 /* For 2A */
-                TextBoxTCPX.Text = (0).ToString();
-                TextBoxTCPY.Text = (0).ToString();
-                TextBoxTCPZ.Text = 700.ToString();
-                TextBoxTCPW.Text = 0.ToString();
-                TextBoxTCPP.Text = 0.ToString();
-                TextBoxTCPR.Text = (0).ToString(); 
+                // TextBoxTCPX.Text = (0).ToString();
+                // TextBoxTCPY.Text = (55).ToString();
+                // TextBoxTCPZ.Text = 700.ToString();
+                // TextBoxTCPW.Text = 0.ToString();
+                // TextBoxTCPP.Text = 0.ToString();
+                // TextBoxTCPR.Text = (0).ToString(); 
 
                     
                 /* For 1A */
 
-                // TextBoxTCPX.Text = 0.ToString();
-                // TextBoxTCPY.Text = (-702).ToString();
-                // TextBoxTCPZ.Text = 842.ToString();
-                // TextBoxTCPW.Text = 0.ToString();
-                // TextBoxTCPP.Text = 45.ToString();
-                // TextBoxTCPR.Text = (-90).ToString();
+                TextBoxTCPX.Text = 0.ToString();
+                TextBoxTCPY.Text = (-702).ToString();
+                TextBoxTCPZ.Text = 842.ToString();
+                TextBoxTCPW.Text = 0.ToString();
+                TextBoxTCPP.Text = 45.ToString();
+                TextBoxTCPR.Text = (-90).ToString();
                 
                 //
 
